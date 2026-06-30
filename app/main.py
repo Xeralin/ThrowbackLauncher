@@ -11,11 +11,10 @@ if "--uninstall" in sys.argv:
     _run_uninstall()
     sys.exit(0)
 
-from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from core.config import get_setting, load_config
-from core.constants import MEDIA_DIR, WEB_OUT_DIR
+from core.constants import WEB_OUT_DIR
 from core.manifest import load_downloads
 from core.rpc import start_presence, stop_presence
 
@@ -87,7 +86,6 @@ def main() -> int:
     app.setApplicationName("Launcher")
     app.setApplicationDisplayName("Throwback Launcher")
     app.setDesktopFileName("throwback-launcher")
-    app.setWindowIcon(QIcon(str(MEDIA_DIR / "otb_icon.png")))
 
     cfg = load_config()
     if get_setting(cfg, "discord_rpc", False):

@@ -9,7 +9,7 @@ from core.manifest import (
     local_downloads,
     resolve_install,
 )
-from core.steam import find_existing_appid
+from core.steam import shortcut_appids
 
 
 def _splash_url(key: str) -> str | None:
@@ -53,15 +53,16 @@ class Library(QObject):
     def home(self) -> list:
         entries: dict[str, dict] = {}
         installed_names: set[str] = set()
+        appids = shortcut_appids()
         for folder in installed_downloads():
             installed_names.add(folder.name)
-            self._merge(entries, folder, partial=False)
+            self._merge(entries, folder, partial=False, appids=appids)
         for folder in local_downloads():
             if folder.name not in installed_names:
-                self._merge(entries, folder, partial=True)
+                self._merge(entries, folder, partial=True, appids=appids)
         return list(entries.values())
 
-    def _merge(self, entries: dict, folder: Path, partial: bool) -> None:
+    def _merge(self, entries: dict, folder: Path, partial: bool, appids: dict) -> None:
         resolved = resolve_install(folder.name, self._downloads)
         if resolved is None:
             return
@@ -69,5 +70,5 @@ class Library(QObject):
         entry = entries.setdefault(download["key"], {**_season_entry(download), "partial": partial})
         if is_hm:
             entry["hm"] = True
-        if not partial and find_existing_appid(folder / launcher_name(is_hm)) is not None:
+        if not partial and str(folder / launcher_name(is_hm)) in appids:
             entry["steamLinked"] = True

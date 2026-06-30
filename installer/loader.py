@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -90,7 +91,7 @@ def _register_uninstall() -> None:
 
 class Installer(QThread):
     progress = Signal(int)
-    failed = Signal(str)
+    failed = Signal()
     done = Signal()
 
     def run(self) -> None:
@@ -107,7 +108,7 @@ class Installer(QThread):
             self.done.emit()
         except Exception as e:
             _log(f"FAILED {e!r}")
-            self.failed.emit(str(e))
+            self.failed.emit()
 
     def _download(self, url: str, dest: Path) -> None:
         req = urllib.request.Request(url, headers={"User-Agent": APP_NAME})
@@ -123,12 +124,17 @@ class Installer(QThread):
                 self.progress.emit(int(read * 90 / total) if total else 0)
 
     def _extract(self, archive: Path, dest: Path) -> None:
-        dest.mkdir(parents=True, exist_ok=True)
+        staging = dest.parent / (dest.name + ".new")
+        shutil.rmtree(staging, ignore_errors=True)
+        staging.mkdir(parents=True)
         with zipfile.ZipFile(archive) as z:
             members = z.infolist()
             for i, member in enumerate(members):
-                z.extract(member, dest)
+                z.extract(member, staging)
                 self.progress.emit(90 + int((i + 1) * 10 / len(members)))
+        if dest.exists():
+            shutil.rmtree(dest)
+        staging.rename(dest)
 
 
 class Loader(QWidget):
@@ -174,11 +180,12 @@ class Loader(QWidget):
     def _on_progress(self, pct: int) -> None:
         self._bar.setValue(pct)
 
-    def _on_failed(self, message: str) -> None:
+    def _on_failed(self) -> None:
         self._bar.setValue(100)
         self._bar.setProperty("failed", True)
         self._bar.style().unpolish(self._bar)
         self._bar.style().polish(self._bar)
+        QTimer.singleShot(4000, QApplication.quit)
 
     def _on_done(self) -> None:
         elapsed_ms = int((time.monotonic() - self._shown_at) * 1000)

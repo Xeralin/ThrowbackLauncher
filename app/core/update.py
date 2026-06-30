@@ -179,7 +179,7 @@ class Component:
 
 
 COMPONENTS = [
-    Component("Throwback", lambda: not getattr(sys, "frozen", False), lambda: VERSION, _throwback_latest, _throwback_apply, restart=True),
+    Component("Throwback", lambda: not (getattr(sys, "frozen", False) or "__compiled__" in globals()), lambda: VERSION, _throwback_latest, _throwback_apply, restart=True),
     Component("DepotDownloader", DD_BIN.exists, lambda: _binary_version(DD_BIN, ["--version"], r"v(\d+(?:\.\d+)+)"),
               _dd_latest, lambda reporter=None: ensure_depotdownloader(reporter, force=True) is not None),
     Component("7zz", SEVENZ_BIN.exists, lambda: _binary_version(SEVENZ_BIN, [], r"\(z\)\s+(\d+(?:\.\d+)+)"),

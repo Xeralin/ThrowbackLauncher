@@ -3,7 +3,7 @@ import threading
 import time
 from typing import Protocol
 
-from core.style import C, step_pass, step_fail, step_warn
+from core.style import C, step_pass, step_fail
 
 
 class Reporter(Protocol):
@@ -77,10 +77,6 @@ class Spinner:
     def fail(self, text: str | None = None) -> None:
         self._finish()
         step_fail(text or self.text)
-
-    def warn(self, text: str | None = None) -> None:
-        self._finish()
-        step_warn(text or self.text)
 
     def stop(self) -> None:
         self._finish()

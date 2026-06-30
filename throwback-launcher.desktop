@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Throwback Launcher
-Comment=A Rainbow Six Siege launcher for Operation Throwback
-Exec=/var/home/myalin/Schreibtisch/Archiv/Line/Launcher/run.sh
-Icon=/var/home/myalin/Schreibtisch/Archiv/Line/Launcher/media/otb_icon.png
-Terminal=false
-Categories=Game;
-StartupWMClass=throwback-launcher

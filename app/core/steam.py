@@ -178,20 +178,23 @@ def _compute_shortcut_appid(name: str, exe: str) -> int:
     return zlib.crc32((exe + name).encode("utf-8")) | 0x80000000
 
 
-def find_existing_appid(exe: Path) -> int | None:
+def shortcut_appids() -> dict[str, int]:
     path = _shortcuts_path()
     if path is None or not path.exists():
-        return None
+        return {}
     try:
         parsed = _parse_vdf(path.read_bytes())
     except Exception:
-        return None
-    exe_str = str(exe)
-    for entry in parsed.get("shortcuts", {}).values():
-        entry_exe = entry.get("exe", "").strip('"')
-        if entry_exe == exe_str:
-            return entry.get("appid")
-    return None
+        return {}
+    return {
+        entry.get("exe", "").strip('"'): entry["appid"]
+        for entry in parsed.get("shortcuts", {}).values()
+        if "appid" in entry
+    }
+
+
+def find_existing_appid(exe: Path) -> int | None:
+    return shortcut_appids().get(str(exe))
 
 
 def list_protons() -> list[dict]:
@@ -244,7 +247,7 @@ def _add_shortcut(appid: int, name: str, exe: Path, start_dir: Path, icon: Path 
             _backup_and_write(path, _serialize_vdf(parsed))
             return True
 
-    new_index = str(max((int(k) for k in shortcuts.keys() if k.isdigit()), default=-1) + 1)
+    new_index = str(max((int(k) for k in shortcuts if k.isdigit()), default=-1) + 1)
     shortcuts[new_index] = {
         "appid": appid,
         "appname": name,

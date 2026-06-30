@@ -122,15 +122,3 @@ def installed_username(d: Path) -> str:
         except (json.JSONDecodeError, OSError):
             pass
     return ""
-
-
-def display_name(folder_name: str, downloads: list[dict]) -> str:
-    resolved = resolve_install(folder_name, downloads)
-    if resolved is None:
-        if folder_name.endswith(HM_FOLDER_SUFFIX):
-            return f"{folder_name.removesuffix(HM_FOLDER_SUFFIX)} Heated Metal"
-        return folder_name
-    download, is_hm = resolved
-    if is_hm:
-        return hm_display_name(download)
-    return download["label"]

@@ -90,7 +90,7 @@ class DownloadController(QObject):
         self._index = 0
         self._download: dict = {}
         self._enable_hm = False
-        self._verify = False
+        self._verifying = False
         self._steam_account = ""
         self._max_downloads = DEFAULT_MAX_DOWNLOADS
         self._target = DOWNLOADS_DIR
@@ -189,7 +189,7 @@ class DownloadController(QObject):
         self._generation += 1
         self._download = download
         self._enable_hm = enable_hm
-        self._verify = verify
+        self._verifying = verify
         self._max_downloads = get_setting(self._cfg, "max_downloads", DEFAULT_MAX_DOWNLOADS)
         self._target = target
         self._cancelled = False
@@ -234,7 +234,7 @@ class DownloadController(QObject):
             self.log_line.emit(f"Setup failed — {e}")
             self._finish(1)
             return
-        self.log_line.emit(f"Validating {self._target}" if self._verify else f"Downloading to {self._target}")
+        self.log_line.emit(f"Validating {self._target}" if self._verifying else f"Downloading to {self._target}")
         self._set_state("downloading")
         self._index = 0
         self._run_next()
@@ -371,12 +371,12 @@ class DownloadController(QObject):
     def _start_apply(self) -> None:
         self._set_state("applying")
         username = get_setting(self._cfg, "username", DEFAULT_USERNAME)
-        if self._verify:
+        if self._verifying:
             username = installed_username(self._target) or username
         threading.Thread(
             target=self._apply,
             args=(self._generation, self._target, self._download, self._enable_hm, username,
-                  self._verify),
+                  self._verifying),
             daemon=True,
         ).start()
 
@@ -397,7 +397,7 @@ class DownloadController(QObject):
         if generation != self._generation or self._cancelled:
             return
         if ok:
-            if self._verify:
+            if self._verifying:
                 self.log_line.emit(f"{self._download['label']} verified")
             else:
                 self.log_line.emit(f"{self._download['label']} installed to {self._target}")

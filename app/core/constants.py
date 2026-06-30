@@ -4,19 +4,20 @@ import re
 import sys
 from pathlib import Path
 
-VERSION = "0.1.7"
+VERSION = "0.1.0"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+FROZEN = bool(getattr(sys, "frozen", False)) or "__compiled__" in globals()
 
 
 def _asset_root() -> Path:
-    if getattr(sys, "frozen", False):
+    if FROZEN:
         return Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent))
     return PROJECT_ROOT
 
 
 def _data_root() -> Path:
-    if not getattr(sys, "frozen", False):
+    if not FROZEN:
         return PROJECT_ROOT
     if sys.platform.startswith("win"):
         base = os.environ.get("PUBLIC") or r"C:\Users\Public"
@@ -135,12 +136,6 @@ DEFAULT_USERNAME = "ThrowbackUser"
 DEFAULT_MAX_DOWNLOADS = 25
 DOWNLOADS_MIN = 1
 DOWNLOADS_MAX = 100
-
-DOWNLOAD_SPEED_PRESETS = (
-    ("Slow",   15),
-    ("Normal", 25),
-    ("Fast",   50),
-)
 
 NAME_PATTERN = re.compile(r"^[A-Za-z0-9_.-]+$")
 MAX_USERNAME_LENGTH = 16

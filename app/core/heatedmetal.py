@@ -224,9 +224,7 @@ def apply_hm(target_dir: Path, username: str, hm_version: str,
         sp.update("Copying files")
         _install_helios(target_dir, username)
 
-        src = mod_dir / "DefaultArgs.dll"
-        if not src.exists():
-            src = mod_dir / "defaultargs.dll"
+        src = _default_args(mod_dir)
         shutil.copy2(src, target_dir / "defaultargs.dll")
 
         target_hm = target_dir / "HeatedMetal"

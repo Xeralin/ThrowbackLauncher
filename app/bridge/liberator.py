@@ -54,6 +54,7 @@ class LiberatorController(QObject):
     _tree_in = Signal(object)
     _error_in = Signal(str)
     _kill_in = Signal()
+    _running_in = Signal(bool)
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -61,6 +62,7 @@ class LiberatorController(QObject):
         self._sock: socket.socket | None = None
         self._send_lock = threading.Lock()
         self._busy = False
+        self._checking = False
         self._active = False
         self._timer: QTimer | None = None
         self._last_state: dict = self._default_state()
@@ -69,6 +71,7 @@ class LiberatorController(QObject):
         self._tree_in.connect(self._relay_tree)
         self._error_in.connect(self._relay_error)
         self._kill_in.connect(self._kill)
+        self._running_in.connect(self._on_running)
 
     @Slot(object)
     def _relay_state(self, state: object) -> None:
@@ -141,9 +144,19 @@ class LiberatorController(QObject):
         self._send(cmd="endMatch")
 
     def _poll(self) -> None:
+        if not self._active or self._checking:
+            return
+        self._checking = True
+        threading.Thread(target=self._check_running, daemon=True).start()
+
+    def _check_running(self) -> None:
+        self._running_in.emit(is_game_running())
+
+    @Slot(bool)
+    def _on_running(self, running: bool) -> None:
+        self._checking = False
         if not self._active:
             return
-        running = is_game_running()
         if running and self._sock is None and not self._busy:
             self._busy = True
             threading.Thread(target=self._attach, daemon=True).start()
