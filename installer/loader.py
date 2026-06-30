@@ -18,14 +18,14 @@ from PySide6.QtWidgets import (
 
 APP_NAME = "Throwback Launcher"
 PAYLOAD_URL = "https://github.com/Xeralin/ThrowbackLauncher/releases/latest/download/ThrowbackLauncher-app.zip"
-INSTALL_DIR = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "ThrowbackLauncher"
+INSTALL_DIR = Path(os.environ.get("PUBLIC") or r"C:\Users\Public") / "ThrowbackLauncher"
 APP_EXE = INSTALL_DIR / "throwback-launcher.exe"
 LOG_FILE = Path(tempfile.gettempdir()) / "ThrowbackLauncher-install.log"
 MIN_VISIBLE_MS = 2000
 
 STYLE = """
 #card {
-    background: #13131a;
+    background: #0d0d0f;
     border: 1px solid #2a2a38;
     border-radius: 8px;
 }
@@ -73,22 +73,14 @@ def _register_uninstall() -> None:
         return
     import winreg
 
-    programs = Path(os.environ["APPDATA"]) / "Microsoft" / "Windows" / "Start Menu" / "Programs"
-    lnk = programs / f"{APP_NAME}.lnk"
     key_path = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\ThrowbackLauncher"
-    ps_remove = (
-        f"Remove-Item -LiteralPath '{lnk}' -Force -ErrorAction SilentlyContinue; "
-        f"Remove-Item -LiteralPath '{INSTALL_DIR}' -Recurse -Force -ErrorAction SilentlyContinue; "
-        f"Remove-Item -LiteralPath 'HKCU:\\{key_path}' -Recurse -Force -ErrorAction SilentlyContinue"
-    )
-    uninstall_cmd = f'powershell -NoProfile -WindowStyle Hidden -Command "{ps_remove}"'
     try:
         with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as k:
             winreg.SetValueEx(k, "DisplayName", 0, winreg.REG_SZ, APP_NAME)
             winreg.SetValueEx(k, "DisplayIcon", 0, winreg.REG_SZ, str(APP_EXE))
             winreg.SetValueEx(k, "Publisher", 0, winreg.REG_SZ, "Operation Throwback")
             winreg.SetValueEx(k, "InstallLocation", 0, winreg.REG_SZ, str(INSTALL_DIR))
-            winreg.SetValueEx(k, "UninstallString", 0, winreg.REG_SZ, uninstall_cmd)
+            winreg.SetValueEx(k, "UninstallString", 0, winreg.REG_SZ, f'"{APP_EXE}" --uninstall')
             winreg.SetValueEx(k, "NoModify", 0, winreg.REG_DWORD, 1)
             winreg.SetValueEx(k, "NoRepair", 0, winreg.REG_DWORD, 1)
         _log("uninstall key written")

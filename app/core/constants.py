@@ -4,7 +4,7 @@ import re
 import sys
 from pathlib import Path
 
-VERSION = "0.1.3"
+VERSION = "0.1.7"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -19,7 +19,7 @@ def _data_root() -> Path:
     if not getattr(sys, "frozen", False):
         return PROJECT_ROOT
     if sys.platform.startswith("win"):
-        base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
+        base = os.environ.get("PUBLIC") or r"C:\Users\Public"
         return Path(base) / "ThrowbackLauncher"
     base = os.environ.get("XDG_DATA_HOME") or str(Path.home() / ".local" / "share")
     return Path(base) / "throwback-launcher"

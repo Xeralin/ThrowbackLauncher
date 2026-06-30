@@ -5,6 +5,12 @@ from pathlib import Path
 APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(APP_DIR))
 
+if "--uninstall" in sys.argv:
+    from core.self_uninstall import run as _run_uninstall
+
+    _run_uninstall()
+    sys.exit(0)
+
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
