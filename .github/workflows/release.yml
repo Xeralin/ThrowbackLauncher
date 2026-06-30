@@ -1,0 +1,109 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build frontend
+        run: |
+          pnpm -C web install --frozen-lockfile
+          pnpm -C web build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-out
+          path: web/out
+
+  linux:
+    needs: frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-out
+          path: web/out
+      - name: Build AppImage
+        run: |
+          python -m pip install -r app/requirements.txt -r build-requirements.txt
+          python -m PyInstaller --noconfirm --clean launcher.spec
+          appdir=build/AppDir
+          mkdir -p "$appdir/usr/bin" "$appdir/usr/share/icons/hicolor/256x256/apps"
+          cp -a dist/throwback-launcher/. "$appdir/usr/bin/"
+          cp media/otb_icon.png "$appdir/usr/share/icons/hicolor/256x256/apps/throwback-launcher.png"
+          cp media/otb_icon.png "$appdir/throwback-launcher.png"
+          printf '[Desktop Entry]\nType=Application\nName=Throwback Launcher\nComment=A Rainbow Six Siege launcher for Operation Throwback\nExec=throwback-launcher\nIcon=throwback-launcher\nTerminal=false\nCategories=Game;\nStartupWMClass=throwback-launcher\n' > "$appdir/throwback-launcher.desktop"
+          printf '#!/usr/bin/env bash\nHERE="$(dirname "$(readlink -f "$0")")"\nexport QTWEBENGINE_DISABLE_SANDBOX=1\nexec "$HERE/usr/bin/throwback-launcher" "$@"\n' > "$appdir/AppRun"
+          chmod +x "$appdir/AppRun"
+          curl -fsSL -o appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool
+          mkdir -p out
+          APPIMAGE_EXTRACT_AND_RUN=1 ./appimagetool "$appdir" out/ThrowbackLauncher.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: appimage
+          path: out/ThrowbackLauncher.AppImage
+
+  windows:
+    needs: frontend
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-out
+          path: web/out
+      - name: Build app payload + loader
+        shell: pwsh
+        run: |
+          python -m pip install -r app/requirements.txt -r build-requirements.txt
+          python -m PyInstaller --noconfirm --clean launcher.spec
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          Compress-Archive -Path dist/throwback-launcher/* -DestinationPath out/ThrowbackLauncher-app.zip
+          python -m PyInstaller --noconfirm --clean loader.spec
+          Copy-Item dist/ThrowbackLauncher.exe out/ThrowbackLauncher.exe -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            out/ThrowbackLauncher.exe
+            out/ThrowbackLauncher-app.zip
+
+  release:
+    needs: [linux, windows]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            "artifacts/appimage/ThrowbackLauncher.AppImage" \
+            "artifacts/windows/ThrowbackLauncher.exe" \
+            "artifacts/windows/ThrowbackLauncher-app.zip" \
+            --repo "${{ github.repository }}" \
+            --title "${{ github.ref_name }}" \
+            --generate-notes

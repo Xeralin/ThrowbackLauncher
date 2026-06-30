@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.venv-win/
+venv/
+config.toml
+config.toml.broken
+.lock
+/downloads/
+/bin/*
+!/bin/Liberator.exe
+!/bin/Liberator.exe.config
+/build/
+/dist/
