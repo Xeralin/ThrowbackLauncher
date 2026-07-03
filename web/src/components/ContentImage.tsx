@@ -1,0 +1,12 @@
+import Image from "next/image";
+
+type ContentImageProps = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+export function ContentImage({ src, alt, width, height }: ContentImageProps) {
+  return <Image src={src} alt={alt} width={width} height={height} />;
+}
