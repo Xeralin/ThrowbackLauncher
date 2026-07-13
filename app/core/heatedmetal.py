@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import tarfile
+import threading
 from collections.abc import Callable
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from core.constants import (
     HELIOS_DIR,
     HELIOS_FILES,
     HELIOS_JSON,
+    HELIOS_RAW_FMT,
     HM_API_URL,
     HM_MOD_DIR,
     HM_RELEASE_URL_FMT,
@@ -22,7 +24,7 @@ from core.constants import (
 from core.depot import RateLimited, fetch_to, github_asset
 from core.reporter import NullReporter, Reporter
 
-_last_error: str = ""
+_last_error = threading.local()
 _release_cache: dict[str, tuple[str, str]] = {}
 
 
@@ -31,12 +33,12 @@ def clear_release_cache() -> None:
 
 
 def _set_error(detail: str) -> None:
-    global _last_error
-    _last_error = detail
+    _last_error.value = detail
 
 
 def _fail_message(fail_text: str) -> str:
-    return f"{fail_text} — {_last_error}" if _last_error else fail_text
+    detail = getattr(_last_error, "value", "")
+    return f"{fail_text} — {detail}" if detail else fail_text
 
 
 def _default_args(mod_dir: Path) -> Path | None:
@@ -81,6 +83,25 @@ def ensure_7zz(update: Callable[[str], None], force: bool = False,
     except Exception as e:
         _set_error(f"7z download failed: {e}")
         return None
+
+
+def ensure_helios(update: Callable[[str], None], force: bool = False) -> Path | None:
+    if all((HELIOS_DIR / name).exists() for name in HELIOS_FILES) and not force:
+        return HELIOS_DIR
+
+    update("Fetching HeliosLoader")
+    HELIOS_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        for name in HELIOS_FILES:
+            fetch_to(HELIOS_RAW_FMT.format(name=name), HELIOS_DIR / name)
+    except Exception as e:
+        _set_error(f"HeliosLoader download failed: {e}")
+        return None
+
+    if all((HELIOS_DIR / name).exists() for name in HELIOS_FILES):
+        return HELIOS_DIR
+    _set_error("HeliosLoader download failed")
+    return None
 
 
 def resolve_hm_release(hm_version: str) -> tuple[str, str] | None:
@@ -240,6 +261,10 @@ def apply_hm(target_dir: Path, username: str, hm_version: str | None,
             if mod_dir is None:
                 sp.fail(_fail_message(fail_text))
                 return False
+
+        if ensure_helios(sp.update) is None:
+            sp.fail(_fail_message(fail_text))
+            return False
 
         sp.update("Copying files")
         try:

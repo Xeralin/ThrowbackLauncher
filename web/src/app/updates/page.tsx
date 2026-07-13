@@ -87,7 +87,10 @@ export default function UpdatesPage() {
       if (ok) {
         showToast("success", `${name} updated`);
       } else {
-        showToast("error", `${name} update failed${message ? ` — ${message}` : ""}`);
+        showToast(
+          "error",
+          `${name} update failed${message ? ` — ${message}` : ""}`,
+        );
       }
     },
   });

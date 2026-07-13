@@ -27,8 +27,8 @@ const faqs: FaqItem[] = [
         Liberator is bundled with the Launcher, so there is nothing to download
         separately. If your antivirus flags it as a false positive, add the
         Launcher install folder as an exclusion, then restore the flagged files
-        from quarantine — or reinstall the Launcher if that is not possible.
-        See the <Link href="/faq/antivirus">Antivirus</Link> page for the full
+        from quarantine — or reinstall the Launcher if that is not possible. See
+        the <Link href="/faq/antivirus">Antivirus</Link> page for the full
         steps.
       </p>
     ),

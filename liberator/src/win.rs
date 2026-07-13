@@ -181,13 +181,6 @@ impl Engine {
         u64::from_le_bytes(b)
     }
 
-    pub fn rd_real(&self, addr: u64, buf: &mut [u8]) {
-        for x in buf.iter_mut() {
-            *x = 0;
-        }
-        self.read_mem(addr, buf);
-    }
-
     pub fn detect_build(&self) -> Option<String> {
         const CHUNK: u32 = 1 << 20;
         const OVERLAP: u32 = 128;

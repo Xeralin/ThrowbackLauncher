@@ -31,9 +31,8 @@ export default function ExtendedRules() {
       <Prose>
         <h3>1. Language</h3>
         <p>
-          This is an English-speaking server. To keep the community
-          as engaged as possible, keep the use of other languages to an absolute
-          minimum.
+          This is an English-speaking server. To keep the community as engaged
+          as possible, keep the use of other languages to an absolute minimum.
         </p>
 
         <h3>2. Spamming</h3>

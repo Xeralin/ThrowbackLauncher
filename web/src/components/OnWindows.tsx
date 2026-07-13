@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { usePlatform } from "@/lib/bridge";
+import { usePlatformView } from "@/lib/platform-view";
 
 export function OnWindows({ children }: { children: ReactNode }) {
-  return usePlatform() === "windows" ? <>{children}</> : null;
+  return usePlatformView() === "windows" ? <>{children}</> : null;
 }

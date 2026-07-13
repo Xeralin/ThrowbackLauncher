@@ -50,10 +50,10 @@ const faqs: FaqItem[] = [
     q: "Why is my game stuck on controller input?",
     a: (
       <p>
-        If your game is stuck on controller input, disconnect your controller
-        if it is still connected, then restart the game. Controllers are
-        supported out of the box — simply plug in your controller and it
-        should be detected automatically.
+        If your game is stuck on controller input, disconnect your controller if
+        it is still connected, then restart the game. Controllers are supported
+        out of the box — simply plug in your controller and it should be
+        detected automatically.
         <OnWindows>
           {" "}
           Note that PS5 (DualSense) controllers require additional third-party
@@ -213,10 +213,10 @@ const faqs: FaqItem[] = [
     ),
   },
   {
-    q: "Why is my .exe / launch file missing?",
+    q: "Why is my .exe file missing?",
     display: (
       <>
-        Why is my <code>.exe</code> / launch file missing?
+        Why is my <code>.exe</code> file missing?
       </>
     ),
     platform: "windows",
@@ -252,8 +252,8 @@ const faqs: FaqItem[] = [
         <p>
           Some Steam accounts from post-USSR countries own a different regional
           version of the game, called SKU RUS, which is in Russian by default.
-          If your account is from one of the affected regions (shown in the
-          map below), switch the language with the following steps.
+          If your account is from one of the affected regions (shown in the map
+          below), switch the language with the following steps.
         </p>
         <ol>
           <li>

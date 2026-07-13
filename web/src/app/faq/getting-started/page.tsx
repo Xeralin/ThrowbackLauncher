@@ -52,8 +52,8 @@ const faqs: FaqItem[] = [
           , an open-source tool.
         </p>
         <Note className="mt-3">
-          Your password is never stored — the Launcher keeps only a login
-          token, just like the Steam client.
+          Your password is never stored — the Launcher keeps only a login token,
+          just like the Steam client.
         </Note>
       </>
     ),
@@ -125,9 +125,9 @@ const faqs: FaqItem[] = [
     a: (
       <p>
         On an installed season the <strong>Manage</strong> tab shows a{" "}
-        <strong>Verify</strong> button. It checks for missing or corrupted
-        files and re-downloads them, repairing the install in place without
-        deleting your existing files.
+        <strong>Verify</strong> button. It checks for missing or corrupted files
+        and re-downloads them, repairing the install in place without deleting
+        your existing files.
       </p>
     ),
   },
@@ -150,14 +150,15 @@ const faqs: FaqItem[] = [
         <p>
           Yes. Seasons install into libraries — folders that can live on any
           drive. Open the <Link href="/settings">Settings</Link>, press{" "}
-          <strong>Add library</strong> to add a folder, and use the star to
-          make it the default. When more than one library exists, the Launcher
-          asks which one to use before each download.
+          <strong>Add library</strong> to add a folder, and use the star to make
+          it the default. When more than one library exists, the Launcher asks
+          which one to use before each download.
         </p>
         <Note className="mt-3">
           If you are low on space, check <strong>Disk usage</strong> in the{" "}
-          <Link href="/settings">Settings</Link> and use{" "}
-          <strong>Clear cache</strong> there to reclaim room.
+          <Link href="/settings">Settings</Link> and press{" "}
+          <strong>Clear</strong> under <strong>Download cache</strong> there to
+          reclaim room.
         </Note>
       </>
     ),
@@ -204,9 +205,9 @@ export default function GettingStarted() {
           <p>
             Add the Launcher install folder at{" "}
             <code>%LOCALAPPDATA%\ThrowbackLauncher</code> as an exclusion in
-            your antivirus before downloading, so it does not interfere with
-            the game files. If you later add a library on another drive,
-            exclude that folder as well. The{" "}
+            your antivirus before downloading, so it does not interfere with the
+            game files. If you later add a library on another drive, exclude
+            that folder as well. The{" "}
             <Link href="/faq/antivirus">Antivirus page</Link> has the
             step-by-step instructions.
           </p>
@@ -219,10 +220,14 @@ export default function GettingStarted() {
       </SectionTitle>
       <Prose>
         <p>
-          Browse the available seasons and press <strong>Download</strong> on
-          the one you want — on your first download the Launcher asks you to
-          sign in with your Steam account. It then fetches the season straight
-          from the Steam depot servers and sets everything up for you.
+          Browse the available seasons under{" "}
+          <Link href="/download">Download</Link> and press{" "}
+          <strong>Download</strong> on the one you want — on your first download
+          the Launcher asks you to sign in with your Steam account.
+        </p>
+        <p>
+          It then fetches the season straight from the Steam depot servers and
+          sets everything up for you.
         </p>
       </Prose>
 
@@ -233,13 +238,14 @@ export default function GettingStarted() {
       <Prose>
         <p>
           Press <strong>Play</strong> in the Launcher to launch the game.
-          <OnLinux>
-            {" "}
-            The first time a season shows <strong>Add to Steam</strong> instead
-            — close Steam completely before you press it, then{" "}
-            <strong>Play</strong> appears.
-          </OnLinux>
         </p>
+        <OnLinux>
+          <p>
+            The first time a season shows <strong>Add to Steam</strong> instead
+            — close Steam completely before you press it and pick a
+            compatibility layer, then <strong>Play</strong> appears.
+          </p>
+        </OnLinux>
       </Prose>
 
       <SectionTitle>Frequently Asked Questions</SectionTitle>

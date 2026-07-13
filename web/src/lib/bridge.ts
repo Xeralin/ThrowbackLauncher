@@ -11,7 +11,7 @@ import {
   type RefObject,
 } from "react";
 
-type ThrowbackOS = "linux" | "windows";
+export type ThrowbackOS = "linux" | "windows";
 
 export type Season = {
   key: string;
@@ -40,7 +40,6 @@ type LibraryBridge = {
 };
 
 export type InfoSnapshot = {
-  diskUsageGb: number;
   version: string;
   warning: string | null;
 };
@@ -48,6 +47,8 @@ export type InfoSnapshot = {
 type InfoBridge = {
   snapshot(callback: (info: InfoSnapshot) => void): void;
   open_library(path: string): void;
+  refresh_disk_usage(): void;
+  disk_usage_changed: QtSignal;
 };
 
 export type LaunchStatus = {
@@ -102,6 +103,7 @@ export type LibraryEntry = {
   path: string;
   display: string;
   default: boolean;
+  fixed: boolean;
   exists: boolean;
   seasons: number;
   freeGb: number | null;
@@ -176,23 +178,6 @@ type DownloaderObject = {
   steam_setup(key: string, index: number): void;
 };
 
-export type RadminSnapshot = {
-  vboxInstalled: boolean;
-  radminIp: string;
-  bridgePresent: boolean;
-  bridgeReady: boolean;
-  competingRoute: string;
-  busy: boolean;
-};
-
-type RadminObject = {
-  refresh(): void;
-  vms(): void;
-  create_bridge(ip: string): void;
-  remove_bridge(): void;
-  attach(vm: string): void;
-};
-
 export type LiberatorCapabilities = {
   godMode: boolean;
   disableAI: boolean;
@@ -210,6 +195,7 @@ export type LiberatorCapabilities = {
   endRound: boolean;
   endMatch: boolean;
   playlist: boolean;
+  unlockAll: boolean;
 };
 
 type LiberatorState = {
@@ -258,14 +244,29 @@ type UpdateObject = {
   apply(index: number): void;
 };
 
+export type RadminSnapshot = {
+  status: string;
+  ip: string;
+  installed: boolean;
+  hasInstaller: boolean;
+  busy: boolean;
+};
+
+type RadminObject = {
+  snapshot(callback: (snapshot: RadminSnapshot) => void): void;
+  select_installer(): void;
+  start(): void;
+  stop(): void;
+};
+
 export type Bridge = {
   platform: PlatformBridge;
   library: LibraryBridge;
   info: InfoBridge;
   settings: SettingsBridge;
   downloader: DownloaderObject;
-  radmin: RadminObject;
   liberator: LiberatorObject;
+  radmin?: RadminObject;
   launch: LaunchObject;
   shears: ShearsObject;
   uninstall: UninstallObject;
@@ -389,6 +390,26 @@ export function useInfo(): InfoSnapshot | null {
     onBridgeReady((bridge) => bridge.info.snapshot(setInfo));
   }, []);
   return info;
+}
+
+export function useDiskUsage(): number | null {
+  const [gb, setGb] = useState<number | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    let disconnect: (() => void) | undefined;
+    onBridgeReady((bridge) => {
+      if (cancelled) return;
+      const onDiskUsage = (value: number) => setGb(value);
+      bridge.info.disk_usage_changed.connect(onDiskUsage);
+      disconnect = () => bridge.info.disk_usage_changed.disconnect(onDiskUsage);
+      bridge.info.refresh_disk_usage();
+    });
+    return () => {
+      cancelled = true;
+      disconnect?.();
+    };
+  }, []);
+  return gb;
 }
 
 export function useSettings(): SettingsBridge | null {
@@ -602,65 +623,6 @@ export function useDownloader(events?: DownloaderEvents): Downloader {
   );
 }
 
-export type RadminEvents = {
-  onResult?: (ok: boolean, message: string) => void;
-};
-
-export type Radmin = RadminSnapshot & {
-  ready: boolean;
-  createBridge: (ip: string) => void;
-  removeBridge: () => void;
-  attach: (vm: string) => void;
-  listVms: (callback: (vms: string[]) => void) => void;
-};
-
-const RADMIN_DEFAULT: RadminSnapshot = {
-  vboxInstalled: false,
-  radminIp: "",
-  bridgePresent: false,
-  bridgeReady: false,
-  competingRoute: "",
-  busy: false,
-};
-
-export function useRadmin(events?: RadminEvents): Radmin {
-  const [snap, setSnap] = useState<RadminSnapshot>(RADMIN_DEFAULT);
-  const vmsCallback = useRef<((vms: string[]) => void) | null>(null);
-  const [objRef, ready] = useBridgeHandle("radmin", {
-    init: (obj) => obj.refresh(),
-    onEvent: (event, args, alive) => {
-      if (event === "state") {
-        if (alive()) setSnap(args[0] as RadminSnapshot);
-        return;
-      }
-      if (event === "vms") {
-        vmsCallback.current?.(args[0] as string[]);
-        vmsCallback.current = null;
-        return;
-      }
-      if (event === "result") {
-        events?.onResult?.(args[0] as boolean, args[1] as string);
-      }
-      objRef.current?.refresh();
-    },
-  });
-
-  return useMemo(
-    () => ({
-      ...snap,
-      ready,
-      createBridge: (ip) => objRef.current?.create_bridge(ip),
-      removeBridge: () => objRef.current?.remove_bridge(),
-      attach: (vm) => objRef.current?.attach(vm),
-      listVms: (callback) => {
-        vmsCallback.current = callback;
-        objRef.current?.vms();
-      },
-    }),
-    [snap, ready, objRef],
-  );
-}
-
 const NO_CAPABILITIES: LiberatorCapabilities = {
   godMode: false,
   disableAI: false,
@@ -678,6 +640,7 @@ const NO_CAPABILITIES: LiberatorCapabilities = {
   endRound: false,
   endMatch: false,
   playlist: false,
+  unlockAll: false,
 };
 
 const LIBERATOR_DEFAULT: LiberatorState = {
@@ -887,5 +850,59 @@ export function useUpdate(events?: UpdateEvents): Update {
       apply: (index) => objRef.current?.apply(index),
     }),
     [snap, objRef],
+  );
+}
+
+const RADMIN_DEFAULT: RadminSnapshot = {
+  status: "idle",
+  ip: "",
+  installed: false,
+  hasInstaller: false,
+  busy: false,
+};
+
+export type RadminEvents = {
+  onLog?: (line: string) => void;
+  onError?: (message: string) => void;
+};
+
+export type Radmin = RadminSnapshot & {
+  ready: boolean;
+  selectInstaller: () => void;
+  start: () => void;
+  stop: () => void;
+};
+
+export function useRadmin(events?: RadminEvents): Radmin {
+  const [snap, setSnap] = useState<RadminSnapshot>(RADMIN_DEFAULT);
+  const [objRef, ready] = useBridgeHandle("radmin", {
+    init: (obj, alive) =>
+      obj?.snapshot((snapshot) => {
+        if (alive()) setSnap(snapshot);
+      }),
+    onEvent: (event, args) => {
+      switch (event) {
+        case "state":
+          setSnap(args[0] as RadminSnapshot);
+          break;
+        case "log_line":
+          events?.onLog?.(args[0] as string);
+          break;
+        case "error":
+          events?.onError?.(args[0] as string);
+          break;
+      }
+    },
+  });
+
+  return useMemo(
+    () => ({
+      ...snap,
+      ready,
+      selectInstaller: () => objRef.current?.select_installer(),
+      start: () => objRef.current?.start(),
+      stop: () => objRef.current?.stop(),
+    }),
+    [snap, ready, objRef],
   );
 }

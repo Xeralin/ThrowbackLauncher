@@ -5,15 +5,15 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { DiscordIcon } from "@/components/DiscordIcon";
+import { OnLinux } from "@/components/OnLinux";
 import { Row, TextSetting } from "@/components/SettingsControls";
 import { Slider } from "@/components/Slider";
 import { Tag } from "@/components/Tag";
 import { TrashIcon } from "@/components/TrashIcon";
 import {
   onBridgeReady,
-  useInfo,
+  useDiskUsage,
   useLibraries,
-  usePlatform,
   useSettings,
   type LibraryEntry,
 } from "@/lib/bridge";
@@ -46,12 +46,12 @@ function StarIcon() {
       strokeLinejoin="round"
       className="h-4 w-4"
     >
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
     </svg>
   );
 }
 
-function BridgeIcon() {
+function BridgeIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -60,13 +60,11 @@ function BridgeIcon() {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-[1.1rem] w-[1.1rem] shrink-0 text-text"
-      aria-hidden="true"
+      className={className}
     >
-      <rect width="20" height="8" x="2" y="2" rx="2" />
-      <rect width="20" height="8" x="2" y="14" rx="2" />
-      <path d="M6 6h.01" />
-      <path d="M6 18h.01" />
+      <circle cx="5" cy="12" r="2.4" />
+      <circle cx="19" cy="12" r="2.4" />
+      <path d="M7.4 12h9.2" />
     </svg>
   );
 }
@@ -149,8 +147,7 @@ function SectionHeading({ children }: { children: ReactNode }) {
 
 export default function SettingsPage() {
   const settings = useSettings();
-  const info = useInfo();
-  const os = usePlatform();
+  const diskUsageGb = useDiskUsage();
   const [libraries] = useLibraries();
   const [removeTarget, setRemoveTarget] = useState<LibraryEntry | null>(null);
   const [usernameSaved, setUsernameSaved] = useState(0);
@@ -203,7 +200,7 @@ export default function SettingsPage() {
                 <Row label="Steam session">
                   <div className="flex min-w-0 items-center gap-3">
                     <span
-                      className={`truncate text-body ${
+                      className={`truncate font-mono text-body ${
                         settings.steam_account ? "text-text" : "text-text-muted"
                       }`}
                     >
@@ -228,13 +225,15 @@ export default function SettingsPage() {
                     <DiscordIcon className="h-[1.25rem] w-[1.25rem] shrink-0 text-text" />
                   }
                 />
-                {os === "linux" && (
+                <OnLinux>
                   <SubscreenTile
-                    href="/settings/bridge"
+                    href="/settings/radmin"
                     title="Bridge"
-                    icon={<BridgeIcon />}
+                    icon={
+                      <BridgeIcon className="h-[1.25rem] w-[1.25rem] shrink-0 text-text" />
+                    }
                   />
-                )}
+                </OnLinux>
               </div>
             </div>
           </section>
@@ -245,7 +244,7 @@ export default function SettingsPage() {
               <div className="rounded-lg border border-border bg-surface px-5 py-[0.85rem]">
                 <Row label="Disk usage">
                   <span className="font-mono text-body text-text">
-                    {info ? `${info.diskUsageGb} GB` : "—"}
+                    {diskUsageGb != null ? `${diskUsageGb} GB` : "…"}
                   </span>
                 </Row>
                 <Row label="Libraries">
@@ -290,29 +289,29 @@ export default function SettingsPage() {
                           <FolderIcon />
                         </button>
                         {!library.default && (
-                          <>
-                            <button
-                              aria-label="Make default"
-                              disabled={!library.exists}
-                              onClick={() =>
-                                settings.set_default_library(library.path)
-                              }
-                              className="p-1 text-text-muted transition-colors hover:text-text disabled:cursor-not-allowed disabled:opacity-40"
-                            >
-                              <StarIcon />
-                            </button>
-                            <button
-                              aria-label="Remove"
-                              onClick={() =>
-                                library.seasons > 0 || !library.exists
-                                  ? setRemoveTarget(library)
-                                  : settings.remove_library(library.path)
-                              }
-                              className="p-1 text-text-muted transition-colors hover:text-[#e0405a]"
-                            >
-                              <TrashIcon />
-                            </button>
-                          </>
+                          <button
+                            aria-label="Make default"
+                            disabled={!library.exists}
+                            onClick={() =>
+                              settings.set_default_library(library.path)
+                            }
+                            className="p-1 text-text-muted transition-colors hover:text-text disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            <StarIcon />
+                          </button>
+                        )}
+                        {!library.default && !library.fixed && (
+                          <button
+                            aria-label="Remove"
+                            onClick={() =>
+                              library.seasons > 0
+                                ? setRemoveTarget(library)
+                                : settings.remove_library(library.path)
+                            }
+                            className="p-1 text-text-muted transition-colors hover:text-[#e0405a]"
+                          >
+                            <TrashIcon />
+                          </button>
                         )}
                       </span>
                     </div>
@@ -360,11 +359,9 @@ export default function SettingsPage() {
           onCancel={() => setRemoveTarget(null)}
         >
           <p className="text-body text-text-muted">
-            {removeTarget.exists
-              ? `This library contains ${removeTarget.seasons} ${
-                  removeTarget.seasons === 1 ? "season" : "seasons"
-                } that will no longer appear in the Launcher. `
-              : "This library was not found. Seasons in it will no longer appear in the Launcher. "}
+            {`This library contains ${removeTarget.seasons} ${
+              removeTarget.seasons === 1 ? "season" : "seasons"
+            } that will no longer appear in the Launcher. `}
             No files will be deleted.
           </p>
         </ConfirmModal>

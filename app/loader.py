@@ -1,3 +1,4 @@
+import contextlib
 import os
 import shutil
 import subprocess
@@ -25,6 +26,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -33,7 +35,7 @@ APP_NAME = "Throwback Launcher"
 PAYLOAD_URL = "https://github.com/Xeralin/ThrowbackLauncher/releases/latest/download/App.zip"
 _LOCAL = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
 INSTALL_DIR = Path(_LOCAL) / "ThrowbackLauncher"
-APP_EXE = INSTALL_DIR / "throwback-launcher.exe"
+APP_EXE = INSTALL_DIR / "Launcher.exe"
 
 
 def _load_fonts() -> None:
@@ -60,6 +62,13 @@ STYLE = """
     font-size: 12px;
 }
 #stepnum { color: #7a7890; font-size: 12px; }
+#note {
+    background: #0d0d00;
+    border-left: 3px solid #f0a500;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+#notetext { color: #c8b060; font-size: 12px; }
 #path {
     background: #1a1a24;
     border: 1px solid #2a2a38;
@@ -84,7 +93,7 @@ STYLE = """
 """
 
 def _hi(text: str) -> str:
-    return f'<span style="font-family:\'Barlow SemiBold\'; color:#e8e0d5">{text}</span>'
+    return f'<span style="font-family:\'Barlow SemiBold\'; font-weight:600; color:#e8e0d5">{text}</span>'
 
 
 STEPS = (
@@ -194,23 +203,52 @@ def _register_uninstall() -> None:
         pass
 
 
+class _Cancelled(Exception):
+    pass
+
+
 class Installer(QThread):
     progress = Signal(int)
     status = Signal(str)
     failed = Signal()
     done = Signal()
+    aborted = Signal()
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._cancel = False
+
+    def cancel(self) -> None:
+        self._cancel = True
+
+    def _check(self) -> None:
+        if self._cancel:
+            raise _Cancelled
 
     def run(self) -> None:
+        archive = Path(tempfile.gettempdir()) / "ThrowbackLauncher.zip"
         try:
-            archive = Path(tempfile.gettempdir()) / "ThrowbackLauncher-App.zip"
             self._download(PAYLOAD_URL, archive)
             self._extract(archive, INSTALL_DIR)
             archive.unlink(missing_ok=True)
             _create_shortcut()
             _register_uninstall()
             self.done.emit()
+        except _Cancelled:
+            self._cleanup(archive)
+            self.aborted.emit()
         except Exception:
-            self.failed.emit()
+            self._cleanup(archive)
+            if self._cancel:
+                self.aborted.emit()
+            else:
+                self.failed.emit()
+
+    def _cleanup(self, archive: Path) -> None:
+        archive.unlink(missing_ok=True)
+        shutil.rmtree(INSTALL_DIR / ".update", ignore_errors=True)
+        with contextlib.suppress(OSError):
+            INSTALL_DIR.rmdir()
 
     def _download(self, url: str, dest: Path) -> None:
         req = urllib.request.Request(url, headers={"User-Agent": APP_NAME})
@@ -219,6 +257,7 @@ class Installer(QThread):
             read = 0
             last = -1
             while True:
+                self._check()
                 chunk = r.read(1 << 16)
                 if not chunk:
                     break
@@ -230,17 +269,22 @@ class Installer(QThread):
                     self.status.emit(f"Downloading {read / 1_000_000:.1f} MB")
 
     def _extract(self, archive: Path, dest: Path) -> None:
-        staging = dest.parent / (dest.name + ".new")
+        staging = dest / ".update"
         shutil.rmtree(staging, ignore_errors=True)
         staging.mkdir(parents=True)
         with zipfile.ZipFile(archive) as z:
             members = z.infolist()
             for i, member in enumerate(members):
+                self._check()
                 z.extract(member, staging)
                 self.progress.emit(90 + int((i + 1) * 10 / len(members)))
                 name = member.filename.rstrip("/").rsplit("/", 1)[-1]
                 if name:
                     self.status.emit(name)
+            removed = [m for m in members if not (staging / m.filename).exists()]
+            if removed:
+                raise OSError(f"{len(removed)} files removed during extraction")
+        self._check()
         dest.mkdir(parents=True, exist_ok=True)
         entries = sorted(staging.iterdir(), key=lambda e: e.name == APP_EXE.name)
         for entry in entries:
@@ -362,6 +406,7 @@ class Loader(QWidget):
         for index, html in enumerate(STEPS, 1):
             num = QLabel(f"{index}.")
             num.setObjectName("stepnum")
+            num.setTextFormat(Qt.RichText)
             num.setFixedWidth(14)
             text = QLabel(html)
             text.setObjectName("body")
@@ -370,8 +415,25 @@ class Loader(QWidget):
             row = QHBoxLayout()
             row.setSpacing(8)
             row.addWidget(num, 0, Qt.AlignTop)
-            row.addWidget(text, 1)
+            row.addWidget(text, 1, Qt.AlignTop)
             steps.addLayout(row)
+
+        note = QFrame()
+        note.setObjectName("note")
+        note.setAttribute(Qt.WA_StyledBackground, True)
+        note.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        note_text = QLabel(
+            "Use <span style=\"font-family:'Barlow SemiBold'; font-weight:600\">Verify</span>"
+            " in the Launcher to restore removed game files."
+        )
+        note_text.setObjectName("notetext")
+        note_text.setTextFormat(Qt.RichText)
+        note_layout = QHBoxLayout(note)
+        note_layout.setContentsMargins(13, 9, 13, 9)
+        note_layout.addWidget(note_text)
+        note_row = QHBoxLayout()
+        note_row.addWidget(note)
+        note_row.addStretch(1)
 
         self._status = QLabel("Downloading")
         self._status.setObjectName("status")
@@ -381,13 +443,13 @@ class Loader(QWidget):
         self._cont.setFont(_button_font())
         self._cont.setFixedHeight(30)
         self._cont.setMinimumWidth(104)
-        self._close = QPushButton("Skip")
+        self._close = QPushButton("Cancel")
         self._close.setObjectName("close")
         self._close.setFont(_button_font())
         self._close.setFixedHeight(30)
         self._close.setMinimumWidth(84)
         self._close.setCursor(Qt.PointingHandCursor)
-        self._close.clicked.connect(QApplication.quit)
+        self._close.clicked.connect(self._on_cancel)
         button_row = QHBoxLayout()
         button_row.setSpacing(8)
         button_row.addWidget(self._status, 0, Qt.AlignVCenter)
@@ -402,6 +464,7 @@ class Loader(QWidget):
         layout.addLayout(header)
         layout.addWidget(path_box)
         layout.addLayout(steps)
+        layout.addLayout(note_row)
         layout.addLayout(button_row)
 
         self._installer = Installer()
@@ -409,6 +472,7 @@ class Loader(QWidget):
         self._installer.status.connect(self._status.setText)
         self._installer.failed.connect(self._on_failed)
         self._installer.done.connect(self._on_done)
+        self._installer.aborted.connect(QApplication.quit)
 
     def _center(self) -> None:
         geo = QApplication.primaryScreen().availableGeometry()
@@ -417,6 +481,14 @@ class Loader(QWidget):
     def begin(self) -> None:
         self._center()
         self._installer.start()
+
+    def _on_cancel(self) -> None:
+        if self._installer.isRunning():
+            self._close.setEnabled(False)
+            self._status.setText("Cancelling")
+            self._installer.cancel()
+        else:
+            QApplication.quit()
 
     def _on_failed(self) -> None:
         self._cont.set_failed()
@@ -427,6 +499,7 @@ class Loader(QWidget):
         self._cont.set_progress(100)
         self._cont.set_ready()
         self._cont.clicked.connect(self._finish)
+        self._close.setText("Skip")
         self._status.setText("Done")
 
     def _copy_path(self) -> None:
@@ -451,7 +524,7 @@ class Loader(QWidget):
 
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key_Escape:
-            QApplication.quit()
+            self._on_cancel()
 
 
 def main() -> int:
@@ -459,7 +532,7 @@ def main() -> int:
         _launch_app()
         return 0
     app = QApplication(sys.argv)
-    lock = QLockFile(str(Path(tempfile.gettempdir()) / "ThrowbackLauncher-loader.lock"))
+    lock = QLockFile(str(Path(tempfile.gettempdir()) / "ThrowbackLauncher.lock"))
     lock.setStaleLockTime(0)
     if not lock.tryLock(0):
         return 0

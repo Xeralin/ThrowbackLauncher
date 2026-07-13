@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { DiscordIcon } from "@/components/DiscordIcon";
 import { ExternalLink } from "@/components/ExternalLink";
 import { site } from "@/config/site";
-import { usePlatform } from "@/lib/bridge";
 import { fetchInviteCounts } from "@/lib/discord";
 
 const cardClasses =
@@ -17,7 +16,6 @@ const valueClasses =
 const loadingClasses = "font-mono text-base leading-none text-text-muted";
 
 export function StatsRow() {
-  const os = usePlatform();
   const [members, setMembers] = useState<string | null>(null);
   const [presence, setPresence] = useState<string | null>(null);
 
@@ -60,10 +58,7 @@ export function StatsRow() {
         <span className="absolute inset-x-0 top-0 h-0.5 origin-left animate-scale-in-x bg-brand [animation-delay:0.2s]" />
         <div className={labelClasses}>Last Updated</div>
         <div className={valueClasses}>{site.lastUpdated}</div>
-        <div className={subClasses}>
-          {os === "windows" ? "Windows " : os === "linux" ? "Linux " : ""}
-          FAQ v{site.version}
-        </div>
+        <div className={subClasses}>FAQ v{site.version}</div>
       </div>
     </div>
   );

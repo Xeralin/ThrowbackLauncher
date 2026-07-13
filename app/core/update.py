@@ -53,7 +53,7 @@ from core.manifest import (
     load_downloads,
     resolve_install,
 )
-from core.self_update import READY
+from core.self_update import READY, helper_argv
 from core.steam import is_game_running
 from core.winspawn import spawn_detached
 from core.reporter import NullReporter, Reporter
@@ -86,7 +86,7 @@ _throwback_release: dict | None = None
 def _throwback_fetch() -> dict:
     global _throwback_release
     if _throwback_release is None:
-        asset = "App.zip" if IS_WINDOWS else "ThrowbackLauncher.AppImage"
+        asset = "App.zip" if IS_WINDOWS else "Launcher.AppImage"
         tag, url = github_asset(UPDATE_API_URL, asset)
         _throwback_release = {"tag": tag, "url": url}
     return _throwback_release
@@ -94,9 +94,11 @@ def _throwback_fetch() -> dict:
 
 def _throwback_latest() -> str | None:
     try:
-        return _throwback_fetch()["tag"].removeprefix("v") or None
-    except LookupError:
+        tag = _throwback_fetch()["tag"].removeprefix("v")
+        version_tuple(tag)
+    except (LookupError, ValueError):
         return None
+    return tag
 
 
 def _throwback_present() -> bool:
@@ -144,7 +146,7 @@ def _release_notes(api_url: str) -> Callable[[], list[dict]]:
 
 def _throwback_apply_windows(sp: Reporter, url: str, tag: str) -> bool:
     install_dir = Path(sys.executable).resolve().parent
-    staging = install_dir.parent / (install_dir.name + ".new")
+    staging = install_dir.parent / (install_dir.name + ".update")
     try:
         with TemporaryDirectory() as tmp:
             archive = Path(tmp) / "App.zip"
@@ -155,8 +157,13 @@ def _throwback_apply_windows(sp: Reporter, url: str, tag: str) -> bool:
             staging.mkdir(parents=True)
             with zipfile.ZipFile(archive) as z:
                 z.extractall(staging)
-            (staging / READY).write_text(tag.removeprefix("v"), encoding="ascii")
-        spawn_detached([sys.executable, "--relaunch", str(os.getpid())])
+                names = z.namelist()
+            removed = [n for n in names if not (staging / n).exists()]
+            if removed:
+                raise OSError(f"{len(removed)} update files removed — check antivirus exclusions")
+            files = [n for n in names if not n.endswith("/")]
+            (staging / READY).write_text("\n".join([tag.removeprefix("v"), *files]), encoding="ascii")
+        spawn_detached(helper_argv(staging))
     except BaseException:
         shutil.rmtree(staging, ignore_errors=True)
         raise
@@ -170,7 +177,7 @@ def _throwback_apply_appimage(sp: Reporter, url: str) -> bool:
         return False
     target = Path(appimage)
     sp.update("Downloading update")
-    replacement = target.with_name(target.name + ".new")
+    replacement = target.with_name(target.name + ".update")
     fetch_to(url, replacement, on_progress=sp.progress)
     replacement.chmod(0o755)
     replacement.replace(target)

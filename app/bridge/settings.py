@@ -11,20 +11,24 @@ from core.constants import (
     user_data_base,
     DD_BIN,
     default_library,
+    DEFAULT_DOWNLOADS_DIR,
     DEFAULT_MAX_DOWNLOADS,
     DEFAULT_USERNAME,
     DOWNLOADS_MAX,
     DOWNLOADS_MIN,
+    HELIOS_DIR,
     HELIOS_JSON,
     HM_BIN_DIR,
     libraries as library_roots,
     MAX_USERNAME_LENGTH,
     NAME_PATTERN,
+    RADMIN_BIN_DIR,
     set_libraries,
     SEVENZ_BIN,
     TL_DIR,
     TL_EXTRACT,
     TL_TOML,
+    WINE_DIR,
 )
 from core.manifest import installed_downloads, local_downloads
 from core.rpc import is_discord_installed, start_presence, stop_presence
@@ -75,6 +79,9 @@ def clear_download_cache() -> None:
     for name in TL_EXTRACT:
         (TL_DIR / name).unlink(missing_ok=True)
     shutil.rmtree(HM_BIN_DIR, ignore_errors=True)
+    shutil.rmtree(HELIOS_DIR, ignore_errors=True)
+    shutil.rmtree(RADMIN_BIN_DIR, ignore_errors=True)
+    shutil.rmtree(WINE_DIR, ignore_errors=True)
 
 
 def _free_gb(root: Path) -> float | None:
@@ -175,10 +182,7 @@ class Settings(QObject):
     @Property("QVariantMap", notify=home_sizes_changed)
     def home_sizes(self) -> dict:
         raw = get_setting(self._cfg, "home_sizes", {})
-        return {
-            str(k): v if isinstance(v, str) else f"{int(v)}x1"
-            for k, v in raw.items()
-        }
+        return {str(k): v for k, v in raw.items() if isinstance(v, str)}
 
     @Slot(str, int, int)
     def set_home_size(self, key: str, width: int, height: int) -> None:
@@ -334,6 +338,7 @@ class Settings(QObject):
                 "path": str(root),
                 "display": _display_path(root),
                 "default": i == 0,
+                "fixed": root == DEFAULT_DOWNLOADS_DIR,
                 "exists": root.exists(),
                 "seasons": sum(1 for d in folders if d.parent == root),
                 "freeGb": _free_gb(root),
@@ -374,8 +379,8 @@ class Settings(QObject):
             return
         roots = library_roots()
         target = Path(path)
-        if target == roots[0]:
-            self.invalid_setting.emit("libraries", "The default library cannot be removed")
+        if target == DEFAULT_DOWNLOADS_DIR:
+            self.invalid_setting.emit("libraries", "The launcher folder cannot be removed")
             return
         if target not in roots:
             return

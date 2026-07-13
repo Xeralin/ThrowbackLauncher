@@ -72,6 +72,16 @@ export default function HeatedMetal() {
         <SeasonTable rows={heatedMetalSeasons} showVersion />
       </Prose>
 
+      <Callout label="// NOTE">
+        <strong>Y9S2 New Blood</strong> is only available on the{" "}
+        <ExternalLink href="https://discord.gg/7mR9VxBxWd">
+          Heated Metal Discord
+        </ExternalLink>
+        , so the Launcher cannot fetch the SDK for you. Still choose{" "}
+        <strong>Heated Metal</strong> when downloading, then copy the Heated
+        Metal files from the Discord into the game folder yourself.
+      </Callout>
+
       <div className="mb-8">
         <DownloaderButton href="https://github.com/DataCluster0/HeatedMetal">
           Repository
@@ -89,8 +99,8 @@ export default function HeatedMetal() {
           </OnWindows>
           <li>Medium or above in-game textures (Shadow Legacy only)</li>
           <li>
-            The DirectX executable — the Vulkan executable is not supported.
-            The Launcher starts the DirectX one for you automatically
+            The DirectX executable — the Vulkan executable is not supported. The
+            Launcher starts the DirectX one for you automatically
           </li>
           <li>
             External overlays disabled, as they can stop the UI from rendering
@@ -102,7 +112,7 @@ export default function HeatedMetal() {
       <Prose>
         <ol>
           <li>
-            In the Launcher, click <strong>Download</strong> on one of the
+            In the Launcher, press <strong>Download</strong> on one of the
             supported seasons above
           </li>
           <li>
@@ -130,16 +140,6 @@ export default function HeatedMetal() {
           in the dialog — Heated Metal installs as its own copy of the season.
         </p>
       </Prose>
-
-      <Callout label="// NOTE">
-        <strong>Y9S2 New Blood</strong> is only available on the{" "}
-        <ExternalLink href="https://discord.gg/7mR9VxBxWd">
-          Heated Metal Discord
-        </ExternalLink>
-        , so the Launcher cannot fetch the SDK for you. Still choose{" "}
-        <strong>Heated Metal</strong> when downloading, then copy the Heated
-        Metal files from the Discord into the game folder yourself.
-      </Callout>
 
       <SectionTitle>Usage</SectionTitle>
       <Prose>

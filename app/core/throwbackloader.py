@@ -1,3 +1,4 @@
+import os
 import re
 import shutil
 import zipfile
@@ -23,35 +24,35 @@ def ensure_tl(reporter: Reporter | None = None, force: bool = False) -> bool:
     with (reporter or NullReporter()) as sp:
         sp.update("Fetching ThrowbackLoader")
         TL_DIR.mkdir(parents=True, exist_ok=True)
-        zip_path = TL_DIR / "_throwbackloader.zip"
+        zip_path = TL_DIR / "tl.zip"
+        tmp_dir = TL_DIR / ".tl.tmp"
         try:
             tag, asset_url = github_asset(TL_API_URL, ".zip")
             fetch_to(asset_url, zip_path, on_progress=sp.progress)
+            shutil.rmtree(tmp_dir, ignore_errors=True)
             with zipfile.ZipFile(zip_path) as z:
                 for name in TL_EXTRACT:
-                    z.extract(name, TL_DIR)
+                    z.extract(name, tmp_dir)
+            for name in TL_EXTRACT:
+                os.replace(tmp_dir / name, TL_DIR / name)
+            (TL_DIR / TL_VERSION_FILE).write_text(tag)
         except RateLimited:
             sp.fail("ThrowbackLoader download failed")
-            zip_path.unlink(missing_ok=True)
             raise
         except Exception as e:
             sp.fail(f"ThrowbackLoader download failed — {e}")
-            zip_path.unlink(missing_ok=True)
             return False
-
-        zip_path.unlink(missing_ok=True)
-        if all((TL_DIR / f).exists() for f in TL_EXTRACT):
-            (TL_DIR / TL_VERSION_FILE).write_text(tag)
-            sp.succeed("ThrowbackLoader ready")
-            return True
-        sp.fail("ThrowbackLoader extraction failed")
-        return False
+        finally:
+            zip_path.unlink(missing_ok=True)
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+        sp.succeed("ThrowbackLoader ready")
+        return True
 
 
 def write_tl_toml(target_dir: Path, username: str) -> None:
-    src = TL_DIR / TL_TOML
+    src = target_dir / TL_TOML
     if not src.exists():
-        src = target_dir / TL_TOML
+        src = TL_DIR / TL_TOML
     text = src.read_text()
     text = re.sub(
         r"""username\s*=\s*["'][^"']*["']""",

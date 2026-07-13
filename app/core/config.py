@@ -15,7 +15,7 @@ def load_config() -> dict:
     try:
         with open(CONFIG_FILE, "rb") as f:
             return tomllib.load(f)
-    except tomllib.TOMLDecodeError:
+    except ValueError:
         broken = CONFIG_FILE.with_name(CONFIG_FILE.name + ".broken")
         CONFIG_FILE.replace(broken)
         warning = f"Settings were malformed and reset — backup saved as {broken.name}"
@@ -46,7 +46,7 @@ def save_config(cfg: dict) -> None:
         lines.append(f"{k} = {_fmt_value(v)}")
     CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
     tmp = CONFIG_FILE.with_name(CONFIG_FILE.name + ".tmp")
-    tmp.write_text("\n".join(lines) + "\n")
+    tmp.write_text("\n".join(lines) + "\n", encoding="utf-8")
     tmp.replace(CONFIG_FILE)
 
 

@@ -8,11 +8,10 @@
 
 ### What is Throwback Launcher?
 
-Throwback Launcher downloads, manages and launches every older season of Rainbow Six Siege, built for **Operation Throwback** and **Heated Metal**. It runs on Linux and Windows and includes Liberator, a RadminVPN bridge and Discord Rich Presence.
+Throwback Launcher downloads, manages and launches every older season of Rainbow Six Siege, built for **Operation Throwback** and **Heated Metal**. It runs on Linux and Windows and includes Liberator and Discord Rich Presence.
 
 > [!IMPORTANT]
-> **Not ready for everyday use yet!** Throwback Launcher is still in early development.
-> Expect rough bugs and changes.
+> **Throwback Launcher is in beta!** Expect bugs and changes.
 
 <br>
 
@@ -27,13 +26,13 @@ Throwback Launcher downloads, manages and launches every older season of Rainbow
 
 **Windows**
 
-1. Download `ThrowbackLauncher.exe` from the [latest release](https://github.com/Xeralin/ThrowbackLauncher/releases/latest)
+1. Download `Launcher.exe` from the [latest release](https://github.com/Xeralin/ThrowbackLauncher/releases/latest)
 2. Run it — the launcher installs itself and creates a Start menu entry
 
 **Linux**
 
-1. Download `ThrowbackLauncher.AppImage` from the [latest release](https://github.com/Xeralin/ThrowbackLauncher/releases/latest)
-2. Run `chmod +x ThrowbackLauncher.AppImage && ./ThrowbackLauncher.AppImage`
+1. Download `Launcher.AppImage` from the [latest release](https://github.com/Xeralin/ThrowbackLauncher/releases/latest)
+2. Run `chmod +x Launcher.AppImage && ./Launcher.AppImage`
 
 <br>
 

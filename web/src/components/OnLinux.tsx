@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { usePlatform } from "@/lib/bridge";
+import { usePlatformView } from "@/lib/platform-view";
 
 export function OnLinux({ children }: { children: ReactNode }) {
-  return usePlatform() === "linux" ? <>{children}</> : null;
+  return usePlatformView() === "linux" ? <>{children}</> : null;
 }

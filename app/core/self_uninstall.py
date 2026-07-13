@@ -29,14 +29,18 @@ def run() -> None:
     except OSError:
         pass
 
-    bat = Path(tempfile.gettempdir()) / "ThrowbackLauncher-uninstall.bat"
+    bat = Path(tempfile.gettempdir()) / "ThrowbackLauncher.uninstall.bat"
+    pattern = str(install_dir).replace("'", "''") + "\\*"
+    kill = (
+        "powershell -NoProfile -NonInteractive -Command "
+        f"\"Get-Process | Where-Object {{ $_.Path -like '{pattern}' }} | Stop-Process -Force\""
+    )
     script = (
         "@echo off\r\n"
         "ping 127.0.0.1 -n 3 >nul\r\n"
-        "taskkill /f /im throwback-launcher.exe >nul 2>&1\r\n"
-        "taskkill /f /im Liberator.exe >nul 2>&1\r\n"
+        f"{kill} >nul 2>&1\r\n"
         "ping 127.0.0.1 -n 2 >nul\r\n"
-        f'rmdir /s /q "{install_dir}.new" >nul 2>&1\r\n'
+        f'rmdir /s /q "{install_dir}.update" >nul 2>&1\r\n'
         f'rmdir /s /q "{install_dir}.old" >nul 2>&1\r\n'
         f'rmdir /s /q "{install_dir}" >nul 2>&1\r\n'
         'del "%~f0"\r\n'

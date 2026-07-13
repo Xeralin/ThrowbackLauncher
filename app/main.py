@@ -24,14 +24,11 @@ from PySide6.QtCore import QLockFile, QObject
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QApplication
 
-from core.config import get_setting, load_config, save_config
+from core.config import get_setting, load_config
 from core.constants import (
-    BIN_DIR,
     DATA_ROOT,
     DEFAULT_DOWNLOADS_DIR,
     FROZEN,
-    LAUNCHER_EXE,
-    TL_DIR,
     WEB_OUT_DIR,
     default_library,
 )
@@ -69,8 +66,8 @@ FORWARDS = {
         "partial_deleted": "partial_deleted",
         "rate_limited": "rate_limited",
     },
-    "radmin": {"changed": "status", "result": "result", "state": "state", "vms_listed": "vms"},
     "liberator": {"state_changed": "state", "tree_changed": "tree", "error": "error"},
+    "radmin": {"state_changed": "state", "error": "error"},
     "update": {"changed": "status", "progress": "progress", "done": "done"},
     "uninstall": {"done": "done", "item_done": "item_done"},
     "shears": {"scan_done": "scan", "cut_done": "cut"},
@@ -79,7 +76,9 @@ FORWARDS = {
 
 def _wire_events(view: BrowserView, bridges: dict[str, QObject]) -> None:
     for target, signals in FORWARDS.items():
-        obj = bridges[target]
+        obj = bridges.get(target)
+        if obj is None:
+            continue
         forwarder = EventForwarder(view, target)
         for signal, event in signals.items():
             getattr(obj, signal).connect(lambda *args, f=forwarder, e=event: f.send(e, *args))
@@ -90,6 +89,8 @@ def _wire_events(view: BrowserView, bridges: dict[str, QObject]) -> None:
                     lambda *_, f=forwarder, o=obj, p=prop: f.send(p, o.property(p))
                 )
             obj.queue_changed.connect(lambda *_, f=forwarder, o=obj: f.send("queue", o.queued_keys()))
+        if target == "radmin":
+            obj.log_line.connect(lambda s, f=forwarder: f.send_buffered("log_line", s))
 
 
 def main() -> int:
@@ -107,14 +108,14 @@ def main() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName("Launcher")
     app.setApplicationDisplayName("Throwback Launcher")
-    app.setDesktopFileName("throwback-launcher")
+    app.setDesktopFileName("ThrowbackLauncher")
 
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
     lock = QLockFile(str(DATA_ROOT / ".lock"))
     lock.setStaleLockTime(0)
     if not lock.tryLock(0):
         peer = QLocalSocket()
-        peer.connectToServer("throwback-launcher")
+        peer.connectToServer("ThrowbackLauncher")
         peer.waitForConnected(300)
         peer.close()
         return 0
@@ -122,27 +123,7 @@ def main() -> int:
     if default_library() == DEFAULT_DOWNLOADS_DIR:
         with contextlib.suppress(OSError):
             DEFAULT_DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
-    for stale in (
-        BIN_DIR / "Liberator.exe",
-        BIN_DIR / "Shadow.dll",
-        BIN_DIR / "liberator-port",
-        TL_DIR / "LaunchR6S.exe",
-    ):
-        with contextlib.suppress(OSError):
-            stale.unlink(missing_ok=True)
-    for folder in local_downloads():
-        with contextlib.suppress(OSError):
-            old = folder / "LaunchR6S.exe"
-            if old.exists():
-                old.replace(folder / LAUNCHER_EXE)
-            (folder / "LaunchR6.bat").unlink(missing_ok=True)
     cfg = load_config()
-    settings_map = cfg.get("settings", {})
-    if "downloads_dir" in settings_map:
-        legacy = settings_map.pop("downloads_dir")
-        if legacy and "libraries" not in settings_map:
-            settings_map["libraries"] = [legacy]
-        save_config(cfg)
     if get_setting(cfg, "discord_rpc", False):
         start_presence()
     app.aboutToQuit.connect(stop_presence)
@@ -158,9 +139,12 @@ def main() -> int:
     settings = Settings(cfg)
     settings.set_peers(downloader, updater)
 
-    radmin = RadminController(cfg)
     liberator = LiberatorController()
     app.aboutToQuit.connect(liberator.shutdown)
+
+    radmin = RadminController() if sys.platform == "linux" else None
+    if radmin is not None:
+        app.aboutToQuit.connect(radmin.shutdown)
 
     uninstaller = UninstallController(downloader)
     downloader.set_peers(updater, settings, uninstaller)
@@ -174,16 +158,17 @@ def main() -> int:
     bridges: dict[str, QObject] = {
         "platform": Platform(),
         "library": Library(downloads),
-        "info": Info(downloads),
+        "info": Info(),
         "settings": settings,
         "downloader": downloader,
-        "radmin": radmin,
         "liberator": liberator,
         "launch": LaunchController(),
         "shears": shears,
         "uninstall": uninstaller,
         "update": updater,
     }
+    if radmin is not None:
+        bridges["radmin"] = radmin
     view = BrowserView(server.base_url + ("/" if has_local else "/download/"), bridges)
     view.setWindowTitle("Throwback Launcher")
     avail = app.primaryScreen().availableSize()
@@ -198,10 +183,10 @@ def main() -> int:
         view.raise_()
         view.activateWindow()
 
-    QLocalServer.removeServer("throwback-launcher")
+    QLocalServer.removeServer("ThrowbackLauncher")
     instance_server = QLocalServer()
     instance_server.newConnection.connect(activate_window)
-    instance_server.listen("throwback-launcher")
+    instance_server.listen("ThrowbackLauncher")
     app.aboutToQuit.connect(instance_server.close)
 
     _wire_events(view, bridges)

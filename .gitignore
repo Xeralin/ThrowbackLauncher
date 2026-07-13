@@ -8,13 +8,16 @@ venv/
 config.toml
 config.toml.*
 /downloads/
+/radmin/
 /bin/*
 !/bin/liberator/
 /bin/liberator/*
 !/bin/liberator/Liberator.exe
 !/bin/liberator/Shadow.dll
-!/bin/helios/
 /nuitka-out/
 /app-out/
 /loader-out/
+/build/
+/out/
+/appimagetool
 /liberator/target/

@@ -38,8 +38,8 @@ const faqs: FaqItem[] = [
     a: (
       <p>
         No. A table only works with the exact build it was made for, so it
-        matches only the season named on its card above. On any other build
-        the memory addresses do not line up.
+        matches only the season named on its card above. On any other build the
+        memory addresses do not line up.
       </p>
     ),
   },
@@ -47,8 +47,8 @@ const faqs: FaqItem[] = [
     q: "Do I have to load the table every time?",
     a: (
       <p>
-        Yes. A table loads into memory for the current session only and does
-        not modify any game files. Load it again each time you launch the game.
+        Yes. A table loads into memory for the current session only and does not
+        modify any game files. Load it again each time you launch the game.
       </p>
     ),
   },

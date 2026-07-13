@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { usePlatform } from "@/lib/bridge";
+import { usePlatformView } from "@/lib/platform-view";
 
 export type FaqItem = {
   q: string;
@@ -43,7 +43,13 @@ function Item({ item, index }: { item: FaqItem; index: number }) {
 
   useEffect(() => {
     function openFromHash() {
-      if (decodeURIComponent(window.location.hash.slice(1)) !== slug) return;
+      let hash = "";
+      try {
+        hash = decodeURIComponent(window.location.hash.slice(1));
+      } catch {
+        return;
+      }
+      if (hash !== slug) return;
       setOpen(true);
       requestAnimationFrame(() =>
         document.getElementById(slug)?.scrollIntoView({ block: "start" }),
@@ -76,7 +82,7 @@ function Item({ item, index }: { item: FaqItem; index: number }) {
 }
 
 export function FaqAccordion({ items }: { items: FaqItem[] }) {
-  const os = usePlatform();
+  const os = usePlatformView();
   const visible = items.filter(
     (item) => !item.platform || item.platform === os,
   );

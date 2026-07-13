@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Hero } from "@/components/Hero";
 import { Note } from "@/components/Note";
 import { FaqAccordion, type FaqItem } from "@/components/FaqAccordion";
-import { ContentVideo } from "@/components/ContentVideo";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
@@ -18,10 +17,10 @@ const faqs: FaqItem[] = [
     a: (
       <>
         <p>
-          Some antivirus programs flag game files as false positives.
-          Liberator, Heated Metal, and the Launcher itself are common targets.
-          The fix is to add both your library folder and the Launcher install
-          folder as exclusions. For Windows Security, follow these steps.
+          Some antivirus programs flag game files as false positives. Liberator,
+          Heated Metal, and the Launcher itself are common targets. The fix is
+          to add both your library folder and the Launcher install folder as
+          exclusions. For Windows Security, follow these steps.
         </p>
         <ol>
           <li>
@@ -39,20 +38,14 @@ const faqs: FaqItem[] = [
           <li>
             Click <strong>Add an exclusion</strong>, select{" "}
             <strong>Folder</strong>, and choose your library folder, then repeat
-            for the Launcher install folder
+            for the Launcher install folder at{" "}
+            <code>%LOCALAPPDATA%\ThrowbackLauncher</code>
           </li>
           <li>Restart your machine and try launching the game again</li>
         </ol>
-        <ContentVideo
-          src="/media/antivirus-exclusion.webm"
-          label="Adding an antivirus exclusion"
-          width={1920}
-          height={1080}
-        />
         <Note className="mt-3">
           Use <strong>Verify</strong> in the Launcher to restore removed game
-          files — Liberator and other files in the Launcher install folder
-          must be restored from quarantine instead.
+          files.
         </Note>
       </>
     ),
@@ -105,8 +98,9 @@ const faqs: FaqItem[] = [
           reused
         </li>
         <li>
-          Use <strong>Verify</strong> in the Launcher, or re-download the
-          season, to restore the files
+          Use <strong>Verify</strong> in the Launcher to restore the files, or
+          download the season again and choose <strong>Heated Metal</strong> in
+          the dialog if the file was part of Heated Metal
         </li>
       </ol>
     ),
@@ -123,9 +117,8 @@ const faqs: FaqItem[] = [
           <strong>Whitelist</strong> section in your antivirus settings.
         </p>
         <p>
-          If you are unsure how to do it for your antivirus, search the
-          internet for{" "}
-          <code>[your antivirus name] add folder exclusion</code>.
+          If you are unsure how to do it for your antivirus, search the internet
+          for <code>[your antivirus name] add folder exclusion</code>.
         </p>
       </>
     ),

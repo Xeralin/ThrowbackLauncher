@@ -315,9 +315,7 @@ export function SeasonDetail({
       {state === "downloading" && (
         <Button
           variant="secondary"
-          onClick={() =>
-            install.installed ? dl.cancel() : dl.setPaused(true)
-          }
+          onClick={() => (install.installed ? dl.cancel() : dl.setPaused(true))}
         >
           {install.installed ? "Cancel" : "Pause"}
         </Button>
@@ -538,14 +536,14 @@ export function SeasonDetail({
           <p className="text-body text-text-muted">
             This season is compatible with the Heated Metal SDK. It adds
             extended capabilities like a map editor, scripting, an in-game
-            console, cosmetic and attachment unlocks, custom keybinds, and
-            host networking controls.
+            console, cosmetic and attachment unlocks, custom keybinds, and host
+            networking controls.
           </p>
           {season.hmBeta && (
             <p className="mt-3 text-body text-text-muted">
-              For this season Heated Metal is an open beta — the Launcher
-              sets up the season, and you copy the Heated Metal files from
-              their Discord into the game folder yourself.
+              For this season Heated Metal is an open beta — the Launcher sets
+              up the season, and you copy the Heated Metal files from their
+              Discord into the game folder yourself.
             </p>
           )}
         </Dialog>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/Hero";
+import { Callout } from "@/components/Callout";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Prose } from "@/components/Prose";
 import { FaqAccordion, type FaqItem } from "@/components/FaqAccordion";
@@ -11,7 +12,8 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
   title: "Multiplayer",
-  description: "How to set up and play with others using RadminVPN or ZeroTier.",
+  description:
+    "How to set up and play with others using RadminVPN or ZeroTier.",
 });
 
 const faqs: FaqItem[] = [
@@ -30,14 +32,13 @@ const faqs: FaqItem[] = [
       <ol>
         <li>
           <strong>Check your game version</strong> — Both players must be on the
-          same build. Installing the same season through the Launcher
-          guarantees this. To confirm it in game, enable{" "}
-          <strong>Show Metrics</strong> in the game settings to see the build
-          number
+          same build. Installing the same season through the Launcher guarantees
+          this. To confirm it in game, enable <strong>Show Metrics</strong> in
+          the game settings to see the build number
         </li>
         <li>
-          <strong>Check your VPN network</strong> — Make sure both players
-          are connected to the same network
+          <strong>Check your VPN network</strong> — Make sure both players are
+          connected to the same network
         </li>
         <li>
           <strong>Check your firewall</strong> — Make sure the old R6S build is
@@ -54,8 +55,8 @@ const faqs: FaqItem[] = [
     q: "Can I use a different VPN?",
     a: (
       <p>
-        Yes, other VPNs can work too. We only support RadminVPN and ZeroTier,
-        so we cannot help if a different one gives you trouble.
+        Yes, other VPNs can work too. We only support RadminVPN and ZeroTier, so
+        we cannot help if a different one gives you trouble.
       </p>
     ),
   },
@@ -71,6 +72,12 @@ export default function Multiplayer() {
         description="How to set up and play with others using RadminVPN or ZeroTier."
       />
 
+      <Callout label="// NOTE">
+        This guide assumes you have already downloaded and set up the game. If
+        not, start with the{" "}
+        <Link href="/faq/getting-started">Getting Started</Link> guide.
+      </Callout>
+
       <SectionTitle>RadminVPN Setup</SectionTitle>
       <Prose>
         <ol>
@@ -84,20 +91,20 @@ export default function Multiplayer() {
           </OnWindows>
           <OnLinux>
             <li>
-              Create a Windows VM in VirtualBox and install{" "}
+              Download the latest RadminVPN{" "}
+              <ExternalLink href="https://github.com/baptisterajaut/radmin-vpn-linux/releases/latest">
+                AppImage
+              </ExternalLink>
+            </li>
+            <li>
+              Download the{" "}
               <ExternalLink href="https://www.radmin-vpn.com/">
-                RadminVPN
+                RadminVPN installer
               </ExternalLink>{" "}
-              on it
+              for Windows
             </li>
             <li>
-              Open <Link href="/settings/bridge">Bridge</Link> in the Settings
-              and create the bridge with your RadminVPN IP
-            </li>
-            <li>Shut the VM down, then attach it to the bridge</li>
-            <li>
-              In Windows, bridge the <strong>Ethernet 2</strong> and{" "}
-              <strong>Radmin VPN</strong> adapters
+              Run the AppImage and select the <code>.exe</code> file
             </li>
           </OnLinux>
           <li>

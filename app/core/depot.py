@@ -91,29 +91,54 @@ def _github_json(api_url: str, bypass_ttl: bool = False) -> dict:
     return data
 
 
-def fetch_to(url: str, dest: Path, on_progress: Callable[[float], None] | None = None) -> None:
-    req = urllib.request.Request(url, headers={"User-Agent": "Throwback"})
-    part = dest.with_name(dest.name + ".part")
+def _fetch_part(url: str, part: Path, on_progress: Callable[[float], None] | None) -> None:
+    offset = part.stat().st_size if part.exists() else 0
+    headers = {"User-Agent": "Throwback"}
+    if offset:
+        headers["Range"] = f"bytes={offset}-"
+    req = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=30) as r, open(part, "wb") as f:
-            try:
-                total = int(r.headers.get("Content-Length") or 0)
-            except ValueError:
-                total = 0
-            if on_progress is None or total <= 0:
-                shutil.copyfileobj(r, f)
-            else:
-                on_progress(0.0)
-                done = 0
-                while chunk := r.read(65536):
-                    f.write(chunk)
-                    done += len(chunk)
+        r = urllib.request.urlopen(req, timeout=30)
+    except urllib.error.HTTPError as exc:
+        if exc.code == 416 and offset:
+            return
+        raise
+    with r:
+        if offset and r.status != 206:
+            offset = 0
+        try:
+            total = offset + int(r.headers.get("Content-Length") or 0)
+        except ValueError:
+            total = 0
+        with open(part, "ab" if offset else "wb") as f:
+            done = offset
+            if on_progress is not None and total > 0:
+                on_progress(min(done / total, 1.0))
+            while chunk := r.read(65536):
+                f.write(chunk)
+                done += len(chunk)
+                if on_progress is not None and total > 0:
                     on_progress(min(done / total, 1.0))
             if 0 < total != f.tell():
                 raise OSError(f"incomplete download ({f.tell()} of {total} bytes)")
-    except BaseException:
+
+
+def fetch_to(url: str, dest: Path, on_progress: Callable[[float], None] | None = None) -> None:
+    part = dest.with_name(dest.name + ".part")
+    part.unlink(missing_ok=True)
+    last: Exception | None = None
+    for attempt in range(3):
+        if attempt:
+            time.sleep(2)
+        try:
+            _fetch_part(url, part, on_progress)
+            last = None
+            break
+        except (OSError, urllib.error.URLError) as exc:
+            last = exc
+    if last is not None:
         part.unlink(missing_ok=True)
-        raise
+        raise last
     part.replace(dest)
 
 
@@ -179,21 +204,14 @@ def ensure_runtime(is_hm: bool, reporter: Reporter | None = None) -> Path | None
     return dd
 
 
-def _other_depot(download: dict, source: dict) -> tuple[int, str, str, bool] | None:
-    if "manifest_other" not in source:
-        return None
-    return (download["depot_other"], source["manifest_other"], "Other", True)
-
-
 def depot_commands(download: dict, steam_account: str, target: Path, max_downloads: int, *, is_hm: bool) -> list[dict]:
     source = download[HM_KEY] if is_hm else download
     depots: list[tuple[int, str, str, bool]] = [
         (download["depot_main"], source["manifest_main"], "Main", False),
         (download["depot_lang"], source["manifest_lang"], "Language", False),
     ]
-    other = _other_depot(download, source)
-    if other:
-        depots.insert(1, other)
+    if "manifest_other" in source:
+        depots.insert(1, (download["depot_other"], source["manifest_other"], "Other", True))
     common = [
         "-app", str(download["app"]),
         "-username", steam_account,

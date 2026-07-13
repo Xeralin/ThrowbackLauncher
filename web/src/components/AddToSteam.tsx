@@ -19,9 +19,12 @@ export function AddToSteamButton({
   const closingRef = useRef(false);
   const dl = useDownloader();
 
-  useEffect(() => () => {
-    closingRef.current = false;
-  }, []);
+  useEffect(
+    () => () => {
+      closingRef.current = false;
+    },
+    [],
+  );
 
   function begin() {
     dl.isSteamRunning((steamUp) => {

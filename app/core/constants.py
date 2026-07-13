@@ -5,7 +5,7 @@ import sys
 import tomllib
 from pathlib import Path
 
-VERSION = "0.2.29"
+VERSION = "0.3.0"
 
 
 def version_tuple(v: str) -> tuple[int, ...]:
@@ -32,7 +32,7 @@ def user_data_base() -> Path:
 def _data_root() -> Path:
     if not FROZEN:
         return PROJECT_ROOT
-    return user_data_base() / ("ThrowbackLauncher" if IS_WINDOWS else "throwback-launcher")
+    return user_data_base() / "ThrowbackLauncher"
 
 
 ASSET_ROOT = _asset_root()
@@ -45,7 +45,7 @@ SPLASH_MASTER_DIR = ASSET_ROOT / "web" / "assets" / "splash"
 
 CONFIG_FILE = DATA_ROOT / "config.toml"
 BIN_DIR = DATA_ROOT / "bin"
-API_CACHE_FILE = BIN_DIR / "api-cache.json"
+API_CACHE_FILE = BIN_DIR / "api_cache.json"
 
 
 DEFAULT_DOWNLOADS_DIR = (DATA_ROOT / "downloads").resolve()
@@ -55,13 +55,12 @@ def _config_libraries() -> list[str]:
     try:
         with open(CONFIG_FILE, "rb") as f:
             settings = tomllib.load(f).get("settings", {})
-    except (OSError, tomllib.TOMLDecodeError):
+    except (OSError, ValueError):
         return []
     values = settings.get("libraries")
     if isinstance(values, list):
         return [v for v in values if isinstance(v, str)]
-    legacy = settings.get("downloads_dir", "")
-    return [legacy] if isinstance(legacy, str) and legacy else []
+    return []
 
 
 def _resolve_libraries(values: list[str]) -> list[Path]:
@@ -72,7 +71,9 @@ def _resolve_libraries(values: list[str]) -> list[Path]:
         path = Path(value).resolve()
         if path not in roots:
             roots.append(path)
-    return roots or [DEFAULT_DOWNLOADS_DIR]
+    if DEFAULT_DOWNLOADS_DIR not in roots:
+        roots.append(DEFAULT_DOWNLOADS_DIR)
+    return roots
 
 
 _libraries_current = _resolve_libraries(_config_libraries())
@@ -99,7 +100,7 @@ def _os_arch() -> tuple[str, str]:
 
 _OS, _ARCH = _os_arch()
 
-TL_DIR = BIN_DIR / "ThrowbackLoader"
+TL_DIR = BIN_DIR / "tl"
 DD_MEMBER = "DepotDownloader.exe" if _OS == "windows" else "DepotDownloader"
 _DD_ASSET = f"DepotDownloader-{_OS}-{_ARCH}.zip"
 DD_BIN = BIN_DIR / DD_MEMBER
@@ -121,8 +122,8 @@ TL_EXTRACT = (*TL_DLLS_COMMON, "uplay_r1_loader64.dll", *UPC_LOADERS, TL_TOML, L
 HM_KEY = "heatedmetal"
 HM_FOLDER_SUFFIX = "_HeatedMetal"
 
-HM_BIN_DIR = BIN_DIR / "HeatedMetal"
-HELIOS_DIR = ASSET_ROOT / "bin" / "helios"
+HM_BIN_DIR = BIN_DIR / "hm"
+HELIOS_DIR = BIN_DIR / "hl"
 HM_MOD_DIR = HM_BIN_DIR / "mod"
 if _OS == "windows":
     SEVENZ_ASSET = "7zr.exe"
@@ -133,6 +134,7 @@ else:
 
 UPDATE_API_URL = "https://api.github.com/repos/Xeralin/ThrowbackLauncher/releases/latest"
 SEVENZ_API_URL = "https://api.github.com/repos/ip7z/7zip/releases/latest"
+HELIOS_RAW_FMT = "https://raw.githubusercontent.com/Xeralin/HeliosLoader/main/{name}"
 HM_API_URL = "https://api.github.com/repos/DataCluster0/HeatedMetal/releases/latest"
 HM_RELEASE_URL_FMT = "https://github.com/DataCluster0/HeatedMetal/releases/download/{tag}/HeatedMetal.7z"
 
@@ -146,6 +148,31 @@ HELIOS_FILES = (
     "uplay_r2_loader64.dll",
 )
 
+RADMIN_SUPPORTED = not IS_WINDOWS
+RADMIN_TAP_DEV = "radminvpn0"
+RADMIN_BIN_DIR = BIN_DIR / "radmin"
+RADMIN_STATE_DIR = DATA_ROOT / "radmin"
+RADMIN_PREFIX = RADMIN_STATE_DIR / "wineprefix"
+RADMIN_MAC_FILE = RADMIN_STATE_DIR / "mac"
+RADMIN_ARTIFACTS = (
+    "tap_bridge",
+    "rvpnnetmp.sys",
+    "adapter_hook.dll",
+    "rvpn_launcher.exe",
+    "netsh.exe",
+    "netsh64.exe",
+    "drvinst.exe",
+)
+BRIDGE_API_URL = "https://api.github.com/repos/Xeralin/Bridge/releases/latest"
+BRIDGE_ASSET_SUFFIX = "linux-x64.tar.xz"
+BRIDGE_VERSION_FILE = ".version"
+
+WINE_DIR = BIN_DIR / "wine"
+WINE_BIN = WINE_DIR / "bin" / "wine"
+WINE_API_URL = "https://api.github.com/repos/Kron4ek/Wine-Builds/releases/latest"
+WINE_ASSET_SUFFIX = "staging-amd64-wow64.tar.xz"
+WINE_VERSION_FILE = ".version"
+
 
 def _steam_dir() -> Path:
     if IS_WINDOWS:
@@ -155,7 +182,7 @@ def _steam_dir() -> Path:
                 value, _ = winreg.QueryValueEx(key, "SteamPath")
             if value:
                 return Path(value)
-        except (OSError, ImportError):
+        except OSError:
             pass
         program_files = os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)")
         return Path(program_files) / "Steam"
@@ -174,9 +201,6 @@ PROTON_BUILTIN = (
     ("Proton - Experimental", "proton_experimental", "Proton Experimental"),
     ("Proton Hotfix", "proton_hotfix", "Proton Hotfix"),
 )
-
-VBOX_IFACE = "vboxnet0"
-VBOX_CMD = "VBoxManage"
 
 DEFAULT_USERNAME = "ThrowbackUser"
 DEFAULT_MAX_DOWNLOADS = 25

@@ -40,7 +40,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [],
     highlights: [
       "RealBlast procedural destruction of walls, floors and ceilings",
-      "Situations: 10 solo and 1 co-op tutorial missions",
+      "Situations — 10 solo and 1 co-op tutorial missions",
       "Terrorist Hunt co-op mode against AI enemies",
       "5v5 attacker vs defender rounds with bomb, hostage and secure area",
     ],
@@ -48,7 +48,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y1S1_BlackIce: {
     release: "February 2, 2016",
     summary:
-      "Y1S1 Black Ice is the first post-launch season of Siege, set around the Canadian Arctic. It adds JTF2 operators Buck and Frost, the free Yacht map, and a spectator camera on all platforms.",
+      "Y1S1 Black Ice is the first post-launch season of Siege, set around the Canadian Arctic. It adds JTF2 operators Buck and Frost and the free Yacht map.",
     operators: [
       {
         name: "Buck",
@@ -65,7 +65,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [{ name: "Yacht", kind: "new" }],
     highlights: [
-      "First post-launch season, establishes free-map DLC model",
+      "Establishes the free-map DLC model",
       "Spectator camera added on all platforms",
       "Introduces seasonal Black Ice weapon skins",
     ],
@@ -73,7 +73,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y1S2_DustLine: {
     release: "May 10, 2016",
     summary:
-      "Y1S2 Dust Line adds Navy SEAL operators Blackbeard and Valkyrie and the free Border map. The update also introduces between-round loadout changes plus weapon charm, skin and headgear customization.",
+      "Y1S2 Dust Line adds Navy SEAL operators Blackbeard and Valkyrie and the free Border map.",
     operators: [
       {
         name: "Blackbeard",
@@ -93,13 +93,13 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     highlights: [
       "Loadouts can be changed between rounds",
       "Weapon charms, skins and operator headgear customization",
-      "New weapons: MPX, SPAS-12, Mk17 CQB, SR-25 and D-50",
+      "New weapons — MPX, SPAS-12, Mk17 CQB, SR-25 and D-50",
     ],
   },
   Y1S3_SkullRain: {
     release: "August 2, 2016",
     summary:
-      "Y1S3 Skull Rain heads to Brazil, adding BOPE operators Capitão and Caveira plus the free Favela map. Patch 4.0 also brings BattlEye anti-cheat, the angled grip, a surrender vote, and the Tactical Realism custom mode.",
+      "Y1S3 Skull Rain heads to Brazil, adding BOPE operators Capitão and Caveira plus the free Favela map.",
     operators: [
       {
         name: "Capitão",
@@ -116,7 +116,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [{ name: "Favela", kind: "new", img: "favela-y1s3" }],
     highlights: [
-      "BattlEye anti-cheat added alongside FairFight",
+      "Patch 4.0 adds BattlEye anti-cheat alongside FairFight",
       "Angled grip attachment for faster ADS transitions",
       "Surrender vote system for Ranked matches",
       "Tactical Realism custom game mode with minimal HUD",
@@ -126,7 +126,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y1S4_RedCrow: {
     release: "November 17, 2016",
     summary:
-      "Y1S4 Red Crow is themed around Japan. It adds SAT operators Hibana and Echo, the free Skyscraper map set in Nagoya, and caliber-based destruction physics.",
+      "Y1S4 Red Crow is themed around Japan. It adds SAT operators Hibana and Echo and the free Skyscraper map, a Yakuza mansion high above Nagoya, plus caliber-based destruction physics.",
     operators: [
       {
         name: "Hibana",
@@ -139,22 +139,20 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
         name: "Echo",
         side: "defender",
         gadgetName: "Yokai",
-        gadgetDesc: "hovering drone that fires disorienting ultrasonic bursts",
+        gadgetDesc:
+          "ceiling-clinging drone that fires disorienting ultrasonic bursts",
       },
     ],
     maps: [{ name: "Skyscraper", kind: "new", img: "skyscraper-y1s4" }],
     highlights: [
-      "Free Skyscraper map: a Yakuza mansion high above Nagoya, Japan",
       "Caliber-based destruction scales bullet holes by weapon caliber",
-      "Hibana breaches reinforced walls from range with X-KAIROS pellets",
-      "Echo Yokai drone clings to ceilings and fires ultrasonic bursts",
     ],
     note: "This season can take up to 10 seconds to close fully.",
   },
   Y2S1_VelvetShell: {
     release: "February 7, 2017",
     summary:
-      "Y2S1 Velvet Shell opens Year 2 with a Spanish theme, adding GEO operators Jackal and Mira and the free Coastline map set in Ibiza. Jackal tracks enemy footprints while Mira deploys one-way Black Mirror windows on walls.",
+      "Y2S1 Velvet Shell opens Year 2 with a Spanish theme, adding GEO operators Jackal and Mira and the free Coastline map set in Ibiza.",
     operators: [
       {
         name: "Jackal",
@@ -166,34 +164,31 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
         name: "Mira",
         side: "defender",
         gadgetName: "Black Mirror",
-        gadgetDesc: "deploys a bulletproof one-way mirror that can be ejected",
+        gadgetDesc:
+          "bulletproof, ejectable one-way mirror for reinforced or soft walls",
       },
     ],
     maps: [{ name: "Coastline", kind: "new", img: "coastline-y2s1" }],
-    highlights: [
-      "Kicks off Year 2 with Spanish GEO operators Jackal and Mira",
-      "Mira places one-way Black Mirror windows in reinforced or soft walls",
-      "Jackal tracks enemy footprints in real time with the Eyenox visor",
-      "New weapons: C7E, PDW9, and Vector .45 ACP",
-    ],
+    highlights: ["New weapons — C7E, PDW9 and Vector .45 ACP"],
     note: "This season can take up to 10 seconds to close fully.",
   },
   Y2S2_Health: {
     release: "June 7, 2017",
     summary:
-      "Y2S2 Health is a maintenance season with no new operators or maps. It focuses on technical fixes: one-step matchmaking, improved hit registration, redesigned hitboxes, and server infrastructure upgrades.",
+      "Y2S2 Health is a maintenance season with no new operators or maps, focused entirely on technical fixes.",
     operators: [],
     maps: [],
     highlights: [
       "One-step matchmaking with faster queue flow",
       "Hitbox redesign limited to the operator body",
-      "No new content, with the Hong Kong season delayed and the Polish map cancelled",
+      "Improved hit registration and server infrastructure",
+      "Hong Kong season delayed and the Polish map cancelled",
     ],
   },
   Y2S3_BloodOrchid: {
     release: "September 5, 2017",
     summary:
-      "Y2S3 Blood Orchid is set in Hong Kong and adds SDU operators Ying and Lesion, GROM defender Ela, and the Theme Park map, alongside the biggest patch to date with sweeping texture and lighting improvements.",
+      "Y2S3 Blood Orchid is set in Hong Kong and adds SDU operators Ying and Lesion, GROM defender Ela, and the Theme Park map, alongside the biggest patch to date.",
     operators: [
       {
         name: "Ying",
@@ -217,7 +212,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [{ name: "Theme Park", kind: "new", img: "theme-park-y2s3" }],
     highlights: [
       "Three operators in one season after the Poland season was merged in",
-      "Biggest patch to date with texture, lighting and sky dome overhaul",
+      "Sweeping texture, lighting and sky dome overhaul",
       "Extensive weapon, gadget and operator balance tweaks",
     ],
   },
@@ -248,8 +243,6 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [{ name: "Tower", kind: "new" }],
     highlights: [
-      "Three operators: Dokkaebi and Vigil (707th SMB) plus Zofia (GROM)",
-      "Free Tower map set atop Mok Myeok Tower in Seoul",
       "Withstand lets Zofia self-revive from a downed state",
       "Dokkaebi hacks the phones of eliminated defenders to view cameras",
     ],
@@ -257,7 +250,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y3S1_Chimera: {
     release: "March 6, 2018",
     summary:
-      "Y3S1 Chimera adds CBRN attackers Lion and Finka and runs Outbreak, a limited-time three-player PvE co-op event set in Truth or Consequences, New Mexico. No new PvP map ships with the season.",
+      "Y3S1 Chimera adds CBRN attackers Lion and Finka and runs Outbreak, a limited-time three-player PvE co-op event set in Truth or Consequences, New Mexico.",
     operators: [
       {
         name: "Lion",
@@ -274,16 +267,16 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [],
     highlights: [
-      "Outbreak co-op PvE event vs infected, March 6 to April 3",
+      "Outbreak runs March 6 to April 3 against infected enemies",
       "First season to add two attackers and no defender",
-      "Three Outbreak-only co-op areas: Resort, Hospital, Junkyard",
+      "Three Outbreak-only areas — Resort, Hospital and Junkyard",
       "Outbreak Packs debut as event-exclusive cosmetic loot",
     ],
   },
   Y3S2_ParaBellum: {
     release: "June 7, 2018",
     summary:
-      "Y3S2 Para Bellum deploys Italian GIS defenders Alibi and Maestro on the new Tuscan map Villa, alongside a Clubhouse map buff, a new counter-defuser device for disabling planted defusers, Pick & Ban settings, and an Echo buff.",
+      "Y3S2 Para Bellum deploys Italian GIS defenders Alibi and Maestro on Villa, a new map set in Tuscany.",
     operators: [
       {
         name: "Alibi",
@@ -304,19 +297,20 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
       "Pick & Ban operator draft settings introduced",
       "Counter-defuser device replaces melee animation for defuser disable",
       "ACS12 full-auto shotgun debuts on both new operators",
-      "Echo buffed with a second Yokai drone",
+      "Echo buffed with a second Yokai drone, Clubhouse map buffed",
     ],
   },
   Y3S3_GrimSky: {
     release: "September 4, 2018",
     summary:
-      "Y3S3 Grim Sky adds attacker Maverick with a breaching blowtorch and shield defender Clash, and delivers the first full map rework with Hereford Base plus a Consulate buff, sight misalignment fixes, and a hatch destruction rework.",
+      "Y3S3 Grim Sky adds attacker Maverick with a breaching blowtorch and shield defender Clash, and delivers the first full map rework with Hereford Base.",
     operators: [
       {
         name: "Maverick",
         side: "attacker",
         gadgetName: "Breaching Torch",
-        gadgetDesc: "burns small holes through reinforced walls and hatches",
+        gadgetDesc:
+          "silently burns small holes through reinforced walls and hatches",
       },
       {
         name: "Clash",
@@ -329,8 +323,8 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [{ name: "Hereford Base", kind: "rework" }],
     highlights: [
       "Clash debuts as the first shield-carrying defender",
-      "Maverick torch cuts silent murder holes into reinforced walls",
-      "Consulate map buff alongside the Hereford rework",
+      "Sight misalignment fixes and hatch destruction rework",
+      "Consulate map buff",
     ],
   },
   Y3S4_WindBastion: {
@@ -362,7 +356,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y4S1_BurntHorizon: {
     release: "March 6, 2019",
     summary:
-      "Y4S1 Burnt Horizon opens Year 4 with an Australian theme, adding SASR operators Gridlock and Mozzie and the Outback map, alongside a Newcomer playlist and MMR rollback against banned cheaters.",
+      "Y4S1 Burnt Horizon opens Year 4 with an Australian theme, adding SASR operators Gridlock and Mozzie and the Outback map.",
     operators: [
       {
         name: "Gridlock",
@@ -388,7 +382,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y4S2_PhantomSight: {
     release: "June 11, 2019",
     summary:
-      "Y4S2 Phantom Sight adds stealth attacker Nøkk and defender Warden, reworks Kafe Dostoyevsky, and standardizes Ranked on Pick & Ban, Bomb and 3-round rotations while expanding reverse friendly fire to all damage types.",
+      "Y4S2 Phantom Sight adds stealth attacker Nøkk and defender Warden and reworks Kafe Dostoyevsky.",
     operators: [
       {
         name: "Nøkk",
@@ -421,7 +415,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y4S3_EmberRise: {
     release: "September 11, 2019",
     summary:
-      "Y4S3 Ember Rise adds Latin American operators Amaru (APCA, Peru) and Goyo (FES, Mexico), a full rework of Kanal, an Unranked playlist, the Champion rank tier, and the first mini battle pass.",
+      "Y4S3 Ember Rise adds Latin American operators Amaru (APCA, Peru) and Goyo (FES, Mexico) and a full rework of Kanal.",
     operators: [
       {
         name: "Amaru",
@@ -448,7 +442,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y4S4_ShiftingTides: {
     release: "December 3, 2019",
     summary:
-      "Y4S4 Shifting Tides introduces Nighthaven operators Kali and Wamai alongside a reworked Theme Park map. The season adds a limb penetration system and the CSRX 300, the first bolt-action sniper rifle in the game.",
+      "Y4S4 Shifting Tides introduces Nighthaven operators Kali and Wamai alongside a reworked Theme Park map.",
     operators: [
       {
         name: "Kali",
@@ -466,7 +460,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [{ name: "Theme Park", kind: "rework", img: "theme-park-y4s4" }],
     highlights: [
-      "CSRX 300 bolt-action sniper rifle debuts",
+      "CSRX 300 debuts as the first bolt-action sniper rifle",
       "Limb penetration added for most weapons",
       "Rappel exit now requires manual confirmation",
       "Casual playlist renamed Quick Match",
@@ -475,7 +469,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y5S1_VoidEdge: {
     release: "March 10, 2020",
     summary:
-      "Y5S1 Void Edge introduces Dutch attacker Iana with a controllable holographic decoy and Jordanian defender Oryx with a dashing breach ability, alongside a rework of the Oregon map.",
+      "Y5S1 Void Edge introduces Dutch attacker Iana and Jordanian defender Oryx, alongside a rework of the Oregon map.",
     operators: [
       {
         name: "Iana",
@@ -501,7 +495,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y5S2_SteelWave: {
     release: "June 16, 2020",
     summary:
-      "Y5S2 Steel Wave adds Nighthaven attacker Ace and Inkaba Task Force defender Melusi alongside a reworked House map, the Proximity Alarm secondary gadget, and unified global MMR.",
+      "Y5S2 Steel Wave adds Nighthaven attacker Ace and Inkaba Task Force defender Melusi alongside a reworked House map.",
     operators: [
       {
         name: "Ace",
@@ -527,7 +521,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y5S3_ShadowLegacy: {
     release: "September 10, 2020",
     summary:
-      "Y5S3 Shadow Legacy brings Sam Fisher from Splinter Cell to Siege as attacker Zero and reworks Chalet, alongside core updates: Ping 2.0, the Hard Breach Charge secondary gadget, map bans, and a unified optics overhaul.",
+      "Y5S3 Shadow Legacy brings Sam Fisher from Splinter Cell to Siege as attacker Zero and reworks Chalet, alongside one of the largest core-gameplay updates in Siege history.",
     operators: [
       {
         name: "Zero",
@@ -550,7 +544,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y5S4_NeonDawn: {
     release: "December 1, 2020",
     summary:
-      "Y5S4 Neon Dawn adds Thai defender Aruni with her Surya Gate laser barriers and a reworked Skyscraper map, alongside broad operator balancing and the launch of next-gen console versions.",
+      "Y5S4 Neon Dawn adds Thai defender Aruni and a reworked Skyscraper map, alongside broad operator balancing.",
     operators: [
       {
         name: "Aruni",
@@ -581,7 +575,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y6S1_CrimsonHeist: {
     release: "March 16, 2021",
     summary:
-      "Y6S1 Crimson Heist introduces Argentinian attacker Flores with his RCE-Ratero explosive drone, alongside a rework of the Border map, the Gonne-6 explosive secondary weapon, and a Match Replay beta on PC.",
+      "Y6S1 Crimson Heist introduces Argentinian attacker Flores alongside a rework of the Border map.",
     operators: [
       {
         name: "Flores",
@@ -601,7 +595,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y6S2_NorthStar: {
     release: "June 14, 2021",
     summary:
-      "Y6S2 North Star adds Canadian defender Thunderbird, whose Kóna Stations heal and revive nearby operators, and a competitive rework of Favela, alongside bulletproof camera, Smoke gas propagation, and death-experience overhauls.",
+      "Y6S2 North Star adds Canadian defender Thunderbird and a competitive rework of Favela.",
     operators: [
       {
         name: "Thunderbird",
@@ -612,16 +606,16 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [{ name: "Favela", kind: "rework" }],
     highlights: [
-      "Bulletproof Camera rework: rotation plus an EMP burst shot",
+      "Bulletproof Camera rework — rotation plus an EMP burst shot",
       "Smoke gas propagation rework stops gas passing through surfaces",
-      "Death rework: skippable animations, bodies become transparent icons",
+      "Death rework — skippable animations, bodies become transparent icons",
       "Melee now shatters Mira mirrors, Evil Eyes and bulletproof cams",
     ],
   },
   Y6S3_CrystalGuard: {
     release: "September 7, 2021",
     summary:
-      "Y6S3 Crystal Guard adds Croatian Nighthaven attacker Osa with her transparent bulletproof Talon-8 Shield, reworks Bank, Coastline and Clubhouse, and converts operator armor ratings into a flat HP system.",
+      "Y6S3 Crystal Guard adds Croatian Nighthaven attacker Osa and reworks Bank, Coastline and Clubhouse.",
     operators: [
       {
         name: "Osa",
@@ -636,7 +630,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
       { name: "Clubhouse", kind: "rework", img: "clubhouse-y6s3" },
     ],
     highlights: [
-      "Armor stat converted to HP: 100/110/125 health pools",
+      "Armor stat converted to HP with 100/110/125 health pools",
       "Individual attacker spawn selection in all playlists",
       "Elite customization mixes Elite uniforms with any headgear",
       "Ranked skill distribution rework with expanded Diamond tiers",
@@ -644,8 +638,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   },
   Y6S4_HighCalibre: {
     release: "November 30, 2021",
-    summary:
-      "Y6S4 High Calibre adds Irish defender Thorn with the Razorbloom Shell blade trap and UZK50Gi SMG, reworks Outback, and ships team color options, Elite 2.0 customization, and HUD updates.",
+    summary: "Y6S4 High Calibre adds Irish defender Thorn and reworks Outback.",
     operators: [
       {
         name: "Thorn",
@@ -664,7 +657,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y7S1_DemonVeil: {
     release: "March 15, 2022",
     summary:
-      "Y7S1 Demon Veil has a Japanese theme and adds defender Azami with her Kiba Barrier kunai. The launch brings permanent Team Deathmatch, attacker repick, and expanded sight options. The new Emerald Plains map arrives mid-season.",
+      "Y7S1 Demon Veil has a Japanese theme and adds defender Azami. The new Emerald Plains map arrives mid-season.",
     operators: [
       {
         name: "Azami",
@@ -691,7 +684,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y7S2_VectorGlare: {
     release: "June 14, 2022",
     summary:
-      "Y7S2 Vector Glare introduces Belgian attacker Sens, whose R.O.U. Projector creates vision-blocking light walls, alongside Close Quarter, a map built for Team Deathmatch, and a new Shooting Range practice area.",
+      "Y7S2 Vector Glare introduces Belgian attacker Sens and the new Close Quarter map.",
     operators: [
       {
         name: "Sens",
@@ -712,7 +705,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y7S3_BrutalSwarm: {
     release: "September 6, 2022",
     summary:
-      "Y7S3 Brutal Swarm introduces Nighthaven attacker Grim with the Kawan Hive Launcher and adds Stadium Bravo as a permanent map, alongside a PC recoil overhaul and a new Impact EMP grenade secondary gadget.",
+      "Y7S3 Brutal Swarm introduces Nighthaven attacker Grim and adds Stadium Bravo as a permanent map.",
     operators: [
       {
         name: "Grim",
@@ -732,7 +725,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y7S4_SolarRaid: {
     release: "December 6, 2022",
     summary:
-      "Y7S4 Solar Raid adds Colombian defender Solis and the Nighthaven Labs map, and introduces console cross-play, cross-progression across all platforms, Ranked 2.0 with the Emerald rank, and a battle pass with branching paths.",
+      "Y7S4 Solar Raid adds Colombian defender Solis and the Nighthaven Labs map.",
     operators: [
       {
         name: "Solis",
@@ -754,7 +747,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y8S1_CommandingForce: {
     release: "March 7, 2023",
     summary:
-      "Y8S1 Commanding Force introduces Brazilian COT attacker Brava, whose Kludge Drone hijacks or destroys defender electronics. It ships a reload rework and operator specialties, with no new map. The MouseTrap console anti-cheat follows mid-season.",
+      "Y8S1 Commanding Force introduces Brazilian COT attacker Brava and ships no new map.",
     operators: [
       {
         name: "Brava",
@@ -775,7 +768,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y8S2_DreadFactor: {
     release: "May 30, 2023",
     summary:
-      "Y8S2 Dread Factor adds Swedish defender Fenrir with fear-gas F-NATT Dread Mines, reworks Consulate, makes the Arcade playlist permanent, and introduces the Observation Blocker secondary gadget for defenders.",
+      "Y8S2 Dread Factor adds Swedish defender Fenrir and reworks Consulate.",
     operators: [
       {
         name: "Fenrir",
@@ -795,7 +788,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y8S3_HeavyMettle: {
     release: "August 29, 2023",
     summary:
-      "Y8S3 Heavy Mettle adds South Korean attacker Ram with the BU-GI Auto-Breacher demolition drone. It ships no new map but reworks playlists with Quick Match 2.0 and Standard, adds commendations, Weapon Roulette, and a shotgun overhaul.",
+      "Y8S3 Heavy Mettle adds South Korean attacker Ram and ships no new map.",
     operators: [
       {
         name: "Ram",
@@ -823,7 +816,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y8S4_DeepFreeze: {
     release: "December 6, 2023",
     summary:
-      "Y8S4 Deep Freeze introduces Portuguese defender Tubarão with gadget-freezing Zoto Canisters and the new map Lair, home base of Deimos. It also reworks frag grenades and opens sign-ups for the R6 Marketplace beta.",
+      "Y8S4 Deep Freeze introduces Portuguese defender Tubarão and the new map Lair, home base of Deimos.",
     operators: [
       {
         name: "Tubarão",
@@ -835,7 +828,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [{ name: "Lair", kind: "new", img: "lair-y8s4" }],
     highlights: [
       "Frag grenade rework removes cooking, shortens fuse times",
-      "R6 Marketplace announced with beta sign-ups open (launch early 2024)",
+      "R6 Marketplace beta sign-ups open, launch early 2024",
       "Versus AI playlist beta and new Map Training playlist",
       "Controller remapping and deadzone customization",
     ],
@@ -843,7 +836,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y9S1_DeadlyOmen: {
     release: "March 12, 2024",
     summary:
-      "Y9S1 Deadly Omen introduces Deimos, the first villain operator in the franchise, and ships no new map. The season centers on a full shield rework, an attachment and optics overhaul, and a new anti-cheat detection model.",
+      "Y9S1 Deadly Omen introduces Deimos, the first villain operator in the franchise, and ships no new map. The season centers on a full shield rework.",
     operators: [
       {
         name: "Deimos",
@@ -854,7 +847,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [],
     highlights: [
-      "Full shield rework: sprinting, free look, guard break, no hip fire",
+      "Full shield rework — sprinting, free look, guard break, no hip fire",
       "Attachment overhaul adds Horizontal Grip and reworked scope zooms",
       "New anti-cheat detection model and stricter Ranked entry rules",
       "Deimos wields the .44 Vendetta magnum tied to his DeathMARK",
@@ -863,7 +856,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y9S2_NewBlood: {
     release: "June 11, 2024",
     summary:
-      "Y9S2 New Blood reworks the classic Recruit into two operators, Striker and Sentry, with flexible secondary gadget loadouts. The season adds no new map. The Marketplace exits beta and the R6 Membership subscription debuts.",
+      "Y9S2 New Blood reworks the classic Recruit into two operators, Striker and Sentry. The season adds no new map.",
     operators: [
       {
         name: "Striker",
@@ -880,7 +873,6 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [],
     highlights: [
-      "Recruit reworked into Striker and Sentry with flexible loadouts",
       "Marketplace launches fully out of beta for skin trading",
       "R6 Membership subscription replaces the Year Pass",
       "Fenrir and Solis receive major nerfs",
@@ -892,7 +884,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y9S3_TwinShells: {
     release: "September 10, 2024",
     summary:
-      "Y9S3 Twin Shells adds Skopós, a defender who remotely operates two robotic V10 Pantheon Shells and swaps between them. The launch also brings the Siege Cup beta tournament and the PCX-33 rifle, with no new map.",
+      "Y9S3 Twin Shells adds Skopós, a defender who remotely operates two robotic shells, and ships no new map.",
     operators: [
       {
         name: "Skopós",
@@ -912,7 +904,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y9S4_CollisionPoint: {
     release: "December 3, 2024",
     summary:
-      "Y9S4 Collision Point closes 2024 with no new operator or map. It reworks Blackbeard around the H.U.L.L. Adaptable Shield, adds console-to-PC crossplay and a career hub with badges, nerfs shields, and brings the Siege Cup beta to all platforms.",
+      "Y9S4 Collision Point closes 2024 with no new operator or map, instead reworking Blackbeard around the H.U.L.L. Adaptable Shield.",
     operators: [
       {
         name: "Blackbeard",
@@ -926,14 +918,15 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [],
     highlights: [
       "Console-to-PC crossplay with separate ranked progression",
-      "Shields nerfed: melee damage removed, earlier suppressive fire",
+      "New career hub with badges",
+      "Shields nerfed — melee damage removed, earlier suppressive fire",
       "Siege Cup beta in-game tournaments expand to all platforms",
     ],
   },
   Y10S1_PrepPhase: {
     release: "March 4, 2025",
     summary:
-      "Y10S1 Prep Phase adds New Zealand attacker Rauora, whose D.O.M. Panel Launcher lets attackers barricade doors with bulletproof panels. The season activates the full Reputation System, updates matchmaking, and precedes Siege X.",
+      "Y10S1 Prep Phase adds New Zealand attacker Rauora. It is the final season before the Siege X overhaul.",
     operators: [
       {
         name: "Rauora",
@@ -947,13 +940,12 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
       "Full Reputation System rollout with penalties and rewards",
       "Dynamic Matchmaking 1.0 adapts to server load for better matches",
       "DX11 removed on PC, DirectX 12 becomes mandatory",
-      "Final season before the Siege X overhaul",
     ],
   },
   Y10S2_DayBreak: {
     release: "June 10, 2025",
     summary:
-      "Y10S2 Day Break launches alongside the free Siege X overhaul. It adds no new operator, instead delivering the permanent 6v6 Dual Front mode on the new District map, five modernized maps, a Clash remaster, and Free Access.",
+      "Y10S2 Day Break launches alongside the free Siege X overhaul. It adds no new operator, instead delivering the permanent 6v6 Dual Front mode on the new District map.",
     operators: [
       {
         name: "Clash",
@@ -966,16 +958,15 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     ],
     maps: [{ name: "District", kind: "new" }],
     highlights: [
-      "Siege X overhaul: audio rework, advanced rappel, destructible props",
-      "Dual Front permanent 6v6 mode on the new District map",
-      "Modernized maps: Bank, Border, Chalet, Clubhouse and Kafe Dostoyevsky",
+      "Siege X overhaul — audio rework, advanced rappel, destructible props",
+      "Modernized maps — Bank, Border, Chalet, Clubhouse and Kafe Dostoyevsky",
       "Free Access model and flexible in-match Pick & Ban",
     ],
   },
   Y10S3_HighStakes: {
     release: "September 2, 2025",
     summary:
-      "Y10S3 High Stakes adds Swiss Nighthaven defender Denari with the T.R.I.P. Connector laser grid, modernizes three maps, and nerfs Blackbeard while removing magnified sights from defender automatic weapons.",
+      "Y10S3 High Stakes adds Swiss Nighthaven defender Denari and modernizes three maps.",
     operators: [
       {
         name: "Denari",
@@ -988,16 +979,15 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [],
     highlights: [
       "Dual Front adds Keres Safe Room data extraction objective",
-      "Modernized maps: Consulate, Nighthaven Labs and Lair",
+      "Modernized maps — Consulate, Nighthaven Labs and Lair",
       "Blackbeard nerfed, defender automatic weapons lose magnified sights",
       "Reaper MK2 secondary weapon added for select operators",
-      "Automated voice chat moderation and full ranked reset",
     ],
   },
   Y10S4_TenfoldPursuit: {
     release: "December 2, 2025",
     summary:
-      "Y10S4 Tenfold Pursuit marks the 10th anniversary of Siege. It ships no new operator, instead remastering Thatcher with the E.G.S. Disruptor, reworking Fortress, and adding the PMR90A2 DMR plus the Wildcards Siege anniversary event.",
+      "Y10S4 Tenfold Pursuit marks the 10th anniversary of Siege. It ships no new operator, instead remastering Thatcher and reworking Fortress.",
     operators: [
       {
         name: "Thatcher",
@@ -1018,7 +1008,7 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
   Y11S1_SilentHunt: {
     release: "March 3, 2026",
     summary:
-      "Y11S1 Silent Hunt centers on a Metal Gear Solid crossover, adding Solid Snake as an attacker. The season launches with the TACIT .45 pistol, three modernized maps, and a major balancing update.",
+      "Y11S1 Silent Hunt centers on a Metal Gear Solid crossover, adding Solid Snake as an attacker.",
     operators: [
       {
         name: "Solid Snake",
@@ -1030,10 +1020,9 @@ export const SEASON_INFO: Record<string, SeasonInfoEntry> = {
     maps: [],
     highlights: [
       "New TACIT .45 suppressed secondary pistol",
-      "Modernized maps: Coastline, Villa and Oregon",
+      "Modernized maps — Coastline, Villa and Oregon",
       "Major balancing update targeting entry fraggers and roamers",
       "Ranked map pool reduced from 16 to 13 maps",
-      "Final Dual Front season before the mode is removed",
     ],
   },
 };

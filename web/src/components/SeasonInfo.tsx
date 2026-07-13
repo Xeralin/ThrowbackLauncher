@@ -5,7 +5,11 @@ import { OnLinux } from "@/components/OnLinux";
 import { Note } from "@/components/Note";
 import { OnWindows } from "@/components/OnWindows";
 import { Tag } from "@/components/Tag";
-import type { SeasonInfoEntry, InfoOperator, InfoMap } from "@/config/season-info";
+import type {
+  SeasonInfoEntry,
+  InfoOperator,
+  InfoMap,
+} from "@/config/season-info";
 
 function assetSlug(name: string): string {
   return name
@@ -34,7 +38,7 @@ function OperatorCard({ op }: { op: InfoOperator }) {
             {op.name}
           </span>
           <Tag>{op.side === "attacker" ? "Attacker" : "Defender"}</Tag>
-          {op.rework && <Tag variant="rework">Rework</Tag>}
+          {op.rework && <Tag>Rework</Tag>}
         </div>
         <p className="line-clamp-2 min-h-[2.75em] text-[0.8rem] leading-snug text-text-muted">
           <span className="font-semibold text-text">{op.gadgetName}</span>
@@ -61,7 +65,7 @@ function MapCard({ map }: { map: InfoMap }) {
         <span className="font-display text-[1.05rem] font-bold text-text">
           {map.name}
         </span>
-        {map.kind === "rework" && <Tag variant="rework">Rework</Tag>}
+        {map.kind === "rework" && <Tag>Rework</Tag>}
       </div>
     </div>
   );

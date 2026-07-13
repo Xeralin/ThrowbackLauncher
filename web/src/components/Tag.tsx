@@ -1,12 +1,11 @@
 import type { CSSProperties, ReactNode } from "react";
 
-type TagVariant = "default" | "red" | "liberator" | "hm" | "rework";
+type TagVariant = "default" | "red" | "liberator" | "hm";
 
 const VARIANTS: Record<Exclude<TagVariant, "hm">, string> = {
   default: "border-border bg-surface-2 text-text-muted",
   red: "border-[#3a1020] bg-[#1a0808] text-[#c06060]",
   liberator: "border-[#3a3a3a] bg-[#1a1a1a] text-[#e8e8e8]",
-  rework: "border-[#243c52] bg-[#0c1a26] text-[#79a6d6]",
 };
 
 const HM_BOX: CSSProperties = {

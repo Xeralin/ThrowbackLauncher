@@ -236,7 +236,9 @@ function GroupBox({ title, children }: { title: string; children: ReactNode }) {
 
 export default function LiberatorPage() {
   const settings = useSettings();
-  const lib = useLiberator({ onError: (message) => showToast("error", message) });
+  const lib = useLiberator({
+    onError: (message) => showToast("error", message),
+  });
 
   const [mods, setMods] = useState<Record<string, boolean>>({});
   const [selectedGametype, setSelectedGametype] = useState("");

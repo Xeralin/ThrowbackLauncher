@@ -33,8 +33,7 @@ export function LogBox({
           follow.current = true;
           return;
         }
-        follow.current =
-          el.scrollHeight - el.scrollTop - el.clientHeight < 4;
+        follow.current = el.scrollHeight - el.scrollTop - el.clientHeight < 4;
       }}
       className={`select-text overflow-auto [overflow-anchor:none] rounded-lg border border-border bg-[#0c0c0f] p-3 font-mono text-label leading-[1.5] text-text-muted ${className}`}
     >

@@ -537,13 +537,21 @@
   .answer-inner ul:last-child {
     margin-bottom: 0;
   }
-  .answer-inner img,
-  .answer-inner video {
+  .answer-inner img {
     max-width: 100%;
     height: auto;
     display: block;
     border-radius: 6px;
     border: 1px solid var(--color-border);
     margin: 0.75rem 0;
+  }
+}
+
+@keyframes bridgeSweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
   }
 }

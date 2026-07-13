@@ -5,7 +5,6 @@ type CalloutProps = {
   label: string;
   children: ReactNode;
   className?: string;
-  compact?: boolean;
 };
 
 const linkClasses =
@@ -30,21 +29,14 @@ export function Callout({
   label,
   children,
   className = "mb-6",
-  compact = false,
 }: CalloutProps) {
   const styles = variantClasses[variant];
   return (
     <div
-      className={`${className} rounded-md border leading-[1.5] ${
-        compact
-          ? "px-[0.8rem] py-[0.4rem] text-[0.85rem]"
-          : "px-[1.1rem] py-[0.9rem] text-[0.85rem]"
-      } ${linkClasses} ${styles.box}`}
+      className={`${className} rounded-md border px-[1.1rem] py-[0.9rem] text-[0.85rem] leading-[1.5] ${linkClasses} ${styles.box}`}
     >
       <strong
-        className={`block font-mono tracking-[0.1em] ${
-          compact ? "mb-[0.1rem] text-[0.6rem]" : "mb-[0.3rem] text-[0.72rem]"
-        } ${styles.label}`}
+        className={`mb-[0.3rem] block font-mono text-[0.72rem] tracking-[0.1em] ${styles.label}`}
       >
         {label}
       </strong>
