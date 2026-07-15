@@ -32,7 +32,7 @@ from PySide6.QtWidgets import (
 )
 
 APP_NAME = "Throwback Launcher"
-PAYLOAD_URL = "https://github.com/Xeralin/ThrowbackLauncher/releases/latest/download/App.zip"
+PAYLOAD_URL = "https://github.com/Xeralin/ThrowbackLauncher/releases/download/v0.3.0-pre/App.zip"
 _LOCAL = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
 INSTALL_DIR = Path(_LOCAL) / "ThrowbackLauncher"
 APP_EXE = INSTALL_DIR / "Launcher.exe"
